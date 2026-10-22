@@ -1,0 +1,1 @@
+package br.com.admeclesial.domain.financeiro; public enum PeriodicidadeRepasse { MENSAL, BIMESTRAL, TRIMESTRAL, SEMESTRAL, ANUAL, EVENTUAL }

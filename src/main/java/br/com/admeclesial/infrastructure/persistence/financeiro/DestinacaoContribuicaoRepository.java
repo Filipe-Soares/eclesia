@@ -1,0 +1,3 @@
+package br.com.admeclesial.infrastructure.persistence.financeiro;
+import br.com.admeclesial.domain.financeiro.DestinacaoContribuicao; import org.springframework.data.jpa.repository.*; import org.springframework.data.repository.query.Param; import java.math.BigDecimal; import java.util.*;
+public interface DestinacaoContribuicaoRepository extends JpaRepository<DestinacaoContribuicao,Long>{ Optional<DestinacaoContribuicao> findByUuid(UUID uuid); @Query("select coalesce(sum(d.valor),0) from DestinacaoContribuicao d where d.contribuicaoId=:contribuicaoId") BigDecimal sumValorPorContribuicao(@Param("contribuicaoId") Long contribuicaoId); }

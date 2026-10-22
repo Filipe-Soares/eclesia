@@ -1,0 +1,1 @@
+package br.com.admeclesial.application.financeiro; import jakarta.validation.constraints.*; import java.math.BigDecimal; import java.util.UUID; public record AlocacaoPagamentoRequest(@NotNull UUID parcelaAPagarUuid,@NotNull @DecimalMin("0.01") BigDecimal valor){}

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: assets('Dizimistas - ADM Eclesial')}">
+</head>
+<body>
+    <header th:replace="~{fragments/layout :: header}"></header>
+    <div class="app-shell">
+        <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+        <main class="app-main">
+            <div class="page">
+                <div th:replace="~{fragments/layout :: feedback}"></div>
+
+                <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                    <div>
+                        <h1 class="h3 mb-1 text-gray-800">Dizimistas</h1>
+                        <p class="text-muted mb-0">Pessoas vinculadas à organização para contribuição de dízimo</p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <a href="/financeiro" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i> Financeiro</a>
+                        <a href="/financeiro/dizimistas/novo" class="btn btn-eclesial"><i class="bi bi-plus-lg me-1"></i> Novo Dizimista</a>
+                    </div>
+                </div>
+
+                <th:block th:if="${#lists.isEmpty(dizimistas)}">
+                    <section th:replace="~{fragments/layout :: empty-state('Nenhum dizimista cadastrado.', 'Vincule pessoas à organização para registrar dízimos.')}"></section>
+                </th:block>
+
+                <div class="card shadow-sm border-0" th:unless="${#lists.isEmpty(dizimistas)}">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Pessoa</th>
+                                    <th>Organização</th>
+                                    <th>Vigência</th>
+                                    <th>Situação</th>
+                                    <th class="text-end pe-3">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="x:${dizimistas}">
+                                    <td class="fw-semibold text-dark" th:text="${pessoasPorId.get(x.pessoaId)} ?: '—'"></td>
+                                    <td th:text="${orgsPorId.get(x.organizacaoEclesialId)} ?: '—'"></td>
+                                    <td th:text="${x.dataInicio} + (${x.dataFim} != null ? ' a ' + ${x.dataFim} : '')"></td>
+                                    <td>
+                                        <span class="badge" th:classappend="${x.ativo} ? 'bg-success-subtle text-success border border-success-subtle' : 'bg-danger-subtle text-danger border border-danger-subtle'" th:text="${x.ativo} ? 'Ativo' : 'Inativo'"></span>
+                                    </td>
+                                    <td class="text-end pe-3">
+                                        <a th:href="@{'/financeiro/dizimistas/'+${x.uuid}+'/editar'}" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil me-1"></i> Editar</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

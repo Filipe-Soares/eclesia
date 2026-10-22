@@ -1,0 +1,1 @@
+package br.com.admeclesial.application.organizacao; import java.util.UUID; public class OrganizacaoNotFoundException extends RuntimeException{public OrganizacaoNotFoundException(UUID uuid){super("Organização eclesial não encontrada: "+uuid);}}

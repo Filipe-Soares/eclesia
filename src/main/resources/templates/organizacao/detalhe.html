@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: assets(${organizacao.nome})}">
+  <meta charset="UTF-8">
+  <title th:text="${organizacao.nome} + ' - ADM Eclesial'">Organização</title>
+</head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+
+<div class="app-shell">
+  <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+  
+  <main class="app-main">
+    <div class="page">
+      
+      <!-- Cabeçalho -->
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-4 pb-2 border-bottom">
+        <div>
+          <div class="d-flex align-items-center gap-2 mb-1">
+            <h1 class="h3 fw-bold text-dark mb-0" th:text="${organizacao.nome}">Organização</h1>
+            <span class="badge" th:classappend="${organizacao.ativo} ? 'bg-success-subtle text-success border border-success-subtle' : 'bg-danger-subtle text-danger border border-danger-subtle'" th:text="${organizacao.ativo ? 'Ativa' : 'Inativa'}"></span>
+          </div>
+          <p class="text-muted small mb-0">Ficha institucional da organização</p>
+        </div>
+        <div class="d-flex gap-2">
+          <a class="btn btn-outline-secondary d-flex align-items-center gap-1" th:href="@{/organizacoes-eclesiais}">
+            <i class="bi bi-arrow-left"></i>
+            <span>Voltar para Lista</span>
+          </a>
+          <a class="btn btn-outline-primary d-flex align-items-center gap-1" th:href="@{/organizacoes-eclesiais/{uuid}/editar(uuid=${organizacao.uuid})}">
+            <i class="bi bi-pencil"></i>
+            <span>Editar</span>
+          </a>
+          <a class="btn btn-eclesial d-flex align-items-center gap-1 shadow-sm" th:href="@{/organizacoes-eclesiais/nova}">
+            <i class="bi bi-plus-lg"></i>
+            <span>Nova Organização</span>
+          </a>
+        </div>
+      </div>
+
+      <div th:replace="~{fragments/layout :: feedback}"></div>
+
+      <!-- Detalhes em Card -->
+      <div class="card border-0 shadow-sm p-4 mb-4" style="max-width: 800px;">
+        <div class="row g-3">
+          <div class="col-12 col-sm-6">
+            <label class="form-label text-muted small fw-semibold mb-1">Tipo de Organização</label>
+            <div class="fw-medium text-dark bg-light p-2 rounded border border-light-subtle" th:text="${organizacao.tipo}"></div>
+          </div>
+          <div class="col-12 col-sm-6">
+            <label class="form-label text-muted small fw-semibold mb-1">Nome Reduzido</label>
+            <div class="fw-medium text-dark bg-light p-2 rounded border border-light-subtle" th:text="${organizacao.nomeReduzido != null and !organizacao.nomeReduzido.isBlank() ? organizacao.nomeReduzido : '—'}"></div>
+          </div>
+          <div class="col-12 col-sm-6">
+            <label class="form-label text-muted small fw-semibold mb-1">CNPJ</label>
+            <div class="fw-medium text-dark bg-light p-2 rounded border border-light-subtle" th:text="${organizacao.cnpj != null and !organizacao.cnpj.isBlank() ? organizacao.cnpj : 'Não informado'}"></div>
+          </div>
+          <div class="col-12 col-sm-6">
+            <label class="form-label text-muted small fw-semibold mb-1">Telefone</label>
+            <div class="fw-medium text-dark bg-light p-2 rounded border border-light-subtle" th:text="${organizacao.telefone != null and !organizacao.telefone.isBlank() ? organizacao.telefone : 'Não informado'}"></div>
+          </div>
+          <div class="col-12">
+            <label class="form-label text-muted small fw-semibold mb-1">E-mail</label>
+            <div class="fw-medium text-dark bg-light p-2 rounded border border-light-subtle" th:text="${organizacao.email != null and !organizacao.email.isBlank() ? organizacao.email : 'Não informado'}"></div>
+          </div>
+          <div class="col-12">
+            <label class="form-label text-muted small fw-semibold mb-1">Identificador (UUID)</label>
+            <div class="font-monospace text-dark bg-light p-2 rounded border border-light-subtle small" th:text="${organizacao.uuid}"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+</body>
+</html>

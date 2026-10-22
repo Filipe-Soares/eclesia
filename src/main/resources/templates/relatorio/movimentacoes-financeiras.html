@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: assets('Relatório de Movimentações Financeiras - ADM Eclesial')}">
+</head>
+<body>
+    <header th:replace="~{fragments/layout :: header}"></header>
+    <div class="app-shell">
+        <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+        <main class="app-main">
+            <div class="page">
+                <div th:replace="~{fragments/layout :: feedback}"></div>
+
+                <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                    <div>
+                        <h1 class="h3 mb-1 text-gray-800">Relatório de Movimentações Financeiras</h1>
+                        <p class="text-muted mb-0">Livro-caixa, fluxo de entradas, saídas e transferências de contas</p>
+                    </div>
+                </div>
+
+                <!-- Filtros -->
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-header bg-light fw-semibold">
+                        <i class="bi bi-funnel me-1"></i> Filtros de Consulta
+                    </div>
+                    <div class="card-body">
+                        <form method="get" th:action="@{/relatorios/movimentacoes-financeiras}" class="row g-3 align-items-end">
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">Organização <span class="text-danger">*</span></label>
+                                <select name="organizacaoUuid" class="form-select" required>
+                                    <option value="">Selecione</option>
+                                    <option th:each="o:${organizacoes}" th:value="${o.uuid}" th:text="${o.nome}" th:selected="${o.uuid == organizacaoUuid}"></option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label fw-semibold">Data De</label>
+                                <input type="date" name="dataInicio" class="form-control" th:value="${dataInicio}">
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label fw-semibold">Data Até</label>
+                                <input type="date" name="dataFim" class="form-control" th:value="${dataFim}">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">Conta Financeira</label>
+                                <select name="contaUuid" class="form-select">
+                                    <option value="">Todas</option>
+                                    <option th:each="c:${contas}" th:value="${c.uuid}" th:text="${c.nome}" th:selected="${c.uuid == contaUuid}"></option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">Tipo de Movimento</label>
+                                <select name="tipo" class="form-select">
+                                    <option value="">Todos</option>
+                                    <option th:each="t:${tipos}" th:value="${t}" th:text="${t}" th:selected="${t == tipo}"></option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">Categoria</label>
+                                <select name="categoriaUuid" class="form-select">
+                                    <option value="">Todas</option>
+                                    <option th:each="c:${categorias}" th:value="${c.uuid}" th:text="${c.nome}" th:selected="${c.uuid == categoriaUuid}"></option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">Centro de Custo</label>
+                                <select name="centroCustoUuid" class="form-select">
+                                    <option value="">Todos</option>
+                                    <option th:each="c:${centros}" th:value="${c.uuid}" th:text="${c.nome}" th:selected="${c.uuid == centroCustoUuid}"></option>
+                                </select>
+                            </div>
+                            <div class="col-12 d-flex justify-content-end gap-2">
+                                <button type="submit" class="btn btn-eclesial">
+                                    <i class="bi bi-search me-1"></i> Consultar
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Resumo -->
+                <div th:if="${resumo != null}">
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-4">
+                            <div class="card shadow-sm border-0 border-start border-success border-4">
+                                <div class="card-body">
+                                    <span class="text-muted small d-block">Total de Entradas</span>
+                                    <span class="fs-4 fw-bold text-success" th:text="'R$ ' + ${#numbers.formatDecimal(resumo.totalEntradas,1,2)}">R$ 0,00</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card shadow-sm border-0 border-start border-danger border-4">
+                                <div class="card-body">
+                                    <span class="text-muted small d-block">Total de Saídas</span>
+                                    <span class="fs-4 fw-bold text-danger" th:text="'R$ ' + ${#numbers.formatDecimal(resumo.totalSaidas,1,2)}">R$ 0,00</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card shadow-sm border-0 border-start border-primary border-4">
+                                <div class="card-body">
+                                    <span class="text-muted small d-block">Resultado Operacional</span>
+                                    <span class="fs-4 fw-bold text-primary" th:text="'R$ ' + ${#numbers.formatDecimal(resumo.resultado,1,2)}">R$ 0,00</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="alert alert-light border small text-muted mb-4">
+                        <i class="bi bi-info-circle me-1"></i> Transferências internas e movimentações não confirmadas não compõem os totalizadores.
+                    </div>
+
+                    <!-- Tabela -->
+                    <div class="card shadow-sm border-0 mb-3" th:if="${resultado != null}">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Data</th>
+                                        <th>Tipo</th>
+                                        <th>Conta</th>
+                                        <th>Categoria</th>
+                                        <th>Centro de Custo</th>
+                                        <th>Descrição</th>
+                                        <th>Status</th>
+                                        <th class="text-end pe-3">Valor</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:if="${#lists.isEmpty(resultado.itens)}">
+                                        <td colspan="8" class="text-center text-muted py-4">Nenhuma movimentação financeira encontrada.</td>
+                                    </tr>
+                                    <tr th:each="i:${resultado.itens}">
+                                        <td th:text="${#temporals.format(i.data,'dd/MM/yyyy')}"></td>
+                                        <td>
+                                            <span class="badge bg-light text-dark border" th:text="${i.tipo}"></span>
+                                        </td>
+                                        <td class="fw-semibold text-dark" th:text="${i.conta}"></td>
+                                        <td class="text-muted small" th:text="${i.categoria}"></td>
+                                        <td class="text-muted small" th:text="${i.centroCusto}"></td>
+                                        <td th:text="${i.descricao}"></td>
+                                        <td>
+                                            <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle" th:text="${i.status}"></span>
+                                        </td>
+                                        <td class="text-end pe-3 fw-bold" th:text="'R$ ' + ${#numbers.formatDecimal(i.valor,1,2)}"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mt-3" th:if="${resultado != null}">
+                        <span class="text-muted small" th:text="|Total de registros: ${resultado.totalElementos}|"></span>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

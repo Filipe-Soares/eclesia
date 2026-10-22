@@ -1,0 +1,1 @@
+package br.com.admeclesial.infrastructure.persistence.financeiro; import br.com.admeclesial.domain.financeiro.Fornecedor; import org.springframework.data.jpa.repository.JpaRepository; import java.util.*; public interface FornecedorRepository extends JpaRepository<Fornecedor,Long>{ Optional<Fornecedor> findByUuid(UUID uuid); List<Fornecedor> findAllByOrderByNomeAsc(); }

@@ -1,0 +1,1 @@
+package br.com.admeclesial.application.matrimonio; import java.time.LocalDate; import java.util.UUID; public record CelebracaoMatrimonialResponse(UUID uuid,UUID processoUuid,UUID organizacaoUuid,String organizacao,UUID celebranteUuid,String celebrante,LocalDate dataCelebracao,String local,String observacao){}

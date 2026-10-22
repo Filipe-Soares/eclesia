@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:fragment="assets(title)">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title th:text="${title != null ? title + ' - ADM Eclesial' : 'ADM Eclesial'}">ADM Eclesial</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" th:href="@{/css/app.css}">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
+</head>
+<body>
+
+<header th:fragment="header" class="navbar navbar-expand-lg navbar-dark app-navbar shadow-sm sticky-top px-3">
+  <div class="container-fluid px-0">
+    <a class="navbar-brand d-flex align-items-center gap-2" th:href="@{/dashboard}">
+      <i class="bi bi-bank2 fs-4 text-warning"></i>
+      <span class="fw-bold">ADM Eclesial</span>
+      <span class="badge bg-dark-subtle text-light border border-secondary-subtle fs-8 fw-normal d-none d-sm-inline-block">Gestão Paroquial</span>
+    </a>
+    <div class="d-flex align-items-center gap-3 ms-auto">
+      <div class="text-white d-flex align-items-center gap-1 small">
+        <i class="bi bi-person-circle fs-5 opacity-75"></i>
+        <span class="fw-medium" sec:authentication="name">usuário</span>
+      </div>
+      <form th:action="@{/logout}" method="post" class="m-0">
+        <button class="btn btn-sm btn-outline-light d-flex align-items-center gap-1" type="submit">
+          <i class="bi bi-box-arrow-right"></i>
+          <span>Sair</span>
+        </button>
+      </form>
+    </div>
+  </div>
+</header>
+
+<aside th:fragment="sidebar" class="app-sidebar bg-white border-end">
+  <nav class="sidebar-nav py-3 px-2" th:with="uri=${currentUri != null ? currentUri : ''}" aria-label="Navegação principal">
+    <a class="nav-link-custom mb-2" th:href="@{/dashboard}">
+      <i class="bi bi-speedometer2"></i>
+      <span>Dashboard</span>
+    </a>
+
+    <details class="nav-group-section" th:attr="open=${(uri.startsWith('/pessoas') or uri.startsWith('/familias') or uri.startsWith('/organizacoes-eclesiais')) ? 'open' : null}" sec:authorize="hasAnyRole('ADMINISTRADOR','SECRETARIA','CATEQUESE','FINANCEIRO','CONSULTA')">
+      <summary class="nav-group-title">Cadastros</summary>
+      <a class="nav-link-custom" th:href="@{/pessoas}"><i class="bi bi-people"></i><span>Pessoas</span></a>
+      <a class="nav-link-custom" th:href="@{/organizacoes-eclesiais}"><i class="bi bi-diagram-3"></i><span>Organizações</span></a>
+      <a class="nav-link-custom" th:href="@{/familias}"><i class="bi bi-people-fill"></i><span>Famílias</span></a>
+    </details>
+
+    <details class="nav-group-section" th:attr="open=${(uri.startsWith('/funcoes-eclesiais') or uri.startsWith('/vinculos-pessoa-organizacao') or uri.startsWith('/vinculos-funcoes-eclesiais')) ? 'open' : null}" sec:authorize="hasAnyRole('ADMINISTRADOR','SECRETARIA','CATEQUESE','FINANCEIRO','CONSULTA')">
+      <summary class="nav-group-title">Vínculos e Funções</summary>
+      <a class="nav-link-custom" th:href="@{/funcoes-eclesiais}"><i class="bi bi-briefcase"></i><span>Funções Eclesiais</span></a>
+      <a class="nav-link-custom" th:href="@{/vinculos-pessoa-organizacao}"><i class="bi bi-link-45deg"></i><span>Vínculos Pessoa × Organização</span></a>
+      <a class="nav-link-custom" th:href="@{/vinculos-funcoes-eclesiais}"><i class="bi bi-person-check"></i><span>Funções Atribuídas</span></a>
+    </details>
+
+    <details class="nav-group-section" th:attr="open=${(uri.startsWith('/catequeses') or uri.startsWith('/sacramentos')) ? 'open' : null}" sec:authorize="hasAnyRole('ADMINISTRADOR','SECRETARIA','CATEQUESE','CONSULTA')">
+      <summary class="nav-group-title">Pastoral</summary>
+      <a class="nav-link-custom" th:href="@{/catequeses}"><i class="bi bi-journal-bookmark"></i><span>Catequese</span></a>
+      <a class="nav-link-custom" th:href="@{/sacramentos}"><i class="bi bi-award"></i><span>Sacramentos</span></a>
+    </details>
+
+    <details class="nav-group-section" th:attr="open=${uri.startsWith('/processos-matrimoniais') ? 'open' : null}" sec:authorize="hasAnyRole('ADMINISTRADOR','SECRETARIA','CONSULTA')">
+      <summary class="nav-group-title">Matrimônio</summary>
+      <a class="nav-link-custom" th:href="@{/processos-matrimoniais}"><i class="bi bi-hearts"></i><span>Processos matrimoniais</span></a>
+    </details>
+
+    <details class="nav-group-section" th:attr="open=${uri.startsWith('/financeiro') ? 'open' : null}" sec:authorize="hasAnyRole('ADMINISTRADOR','FINANCEIRO')">
+      <summary class="nav-group-title">Financeiro</summary>
+      <a class="nav-link-custom" th:href="@{/financeiro}"><i class="bi bi-cash-coin"></i><span>Gestão financeira</span></a>
+      <a class="nav-link-custom" th:href="@{/financeiro/contas}"><i class="bi bi-bank"></i><span>Contas</span></a>
+      <a class="nav-link-custom" th:href="@{/financeiro/categorias}"><i class="bi bi-tags"></i><span>Categorias</span></a>
+      <a class="nav-link-custom" th:href="@{/financeiro/centros-custo}"><i class="bi bi-diagram-2"></i><span>Centros de custo</span></a>
+      <a class="nav-link-custom" th:href="@{/financeiro/fornecedores}"><i class="bi bi-truck"></i><span>Fornecedores</span></a>
+      <a class="nav-link-custom" th:href="@{/financeiro/dizimistas}"><i class="bi bi-people"></i><span>Dizimistas</span></a>
+      <a class="nav-link-custom" th:href="@{/financeiro/movimentacoes}"><i class="bi bi-arrow-left-right"></i><span>Movimentações</span></a>
+      <a class="nav-link-custom" th:href="@{/financeiro/transferencias}"><i class="bi bi-arrow-left-right"></i><span>Transferências</span></a>
+      <a class="nav-link-custom" th:href="@{/financeiro/contas-a-pagar}"><i class="bi bi-calendar-x"></i><span>Contas a pagar</span></a>
+      <a class="nav-link-custom" th:href="@{/financeiro/pagamentos}"><i class="bi bi-credit-card"></i><span>Pagamentos</span></a>
+      <a class="nav-link-custom" th:href="@{/financeiro/regras-repasse}"><i class="bi bi-send"></i><span>Regras de repasse</span></a>
+      <a class="nav-link-custom" th:href="@{/financeiro/obrigacoes-repasse}"><i class="bi bi-send-check"></i><span>Repasses gerados</span></a>
+      <a class="nav-link-custom" th:href="@{/financeiro/orcamentos}"><i class="bi bi-pie-chart"></i><span>Orçamentos</span></a>
+    </details>
+
+    <details class="nav-group-section" th:attr="open=${uri.startsWith('/projetos') ? 'open' : null}" sec:authorize="hasAnyRole('ADMINISTRADOR','SECRETARIA','FINANCEIRO','CONSULTA')">
+      <summary class="nav-group-title">Projetos</summary>
+      <a class="nav-link-custom" th:href="@{/projetos}"><i class="bi bi-kanban"></i><span>Projetos / Obras</span></a>
+    </details>
+
+    <details class="nav-group-section" th:attr="open=${uri.startsWith('/relatorios') ? 'open' : null}">
+      <summary class="nav-group-title">Relatórios</summary>
+      <a class="nav-link-custom" sec:authorize="hasAnyRole('ADMINISTRADOR','SECRETARIA','CATEQUESE','FINANCEIRO','CONSULTA')" th:href="@{/relatorios/pessoas}"><i class="bi bi-file-earmark-person"></i><span>Pessoas</span></a>
+      <a class="nav-link-custom" sec:authorize="hasAnyRole('ADMINISTRADOR','SECRETARIA','CATEQUESE','CONSULTA')" th:href="@{/relatorios/catequese}"><i class="bi bi-file-earmark-text"></i><span>Catequese</span></a>
+      <a class="nav-link-custom" sec:authorize="hasAnyRole('ADMINISTRADOR','SECRETARIA','CATEQUESE','CONSULTA')" th:href="@{/relatorios/sacramentos}"><i class="bi bi-file-earmark-check"></i><span>Sacramentos</span></a>
+      <a class="nav-link-custom" sec:authorize="hasAnyRole('ADMINISTRADOR','FINANCEIRO')" th:href="@{/relatorios/contribuicoes}"><i class="bi bi-receipt"></i><span>Contribuições</span></a>
+      <a class="nav-link-custom" sec:authorize="hasAnyRole('ADMINISTRADOR','FINANCEIRO')" th:href="@{/relatorios/movimentacoes-financeiras}"><i class="bi bi-graph-up-arrow"></i><span>Movimentações</span></a>
+      <a class="nav-link-custom" sec:authorize="hasAnyRole('ADMINISTRADOR','FINANCEIRO')" th:href="@{/relatorios/contas-a-pagar}"><i class="bi bi-calendar-x"></i><span>Contas a pagar</span></a>
+      <a class="nav-link-custom" sec:authorize="hasAnyRole('ADMINISTRADOR','FINANCEIRO')" th:href="@{/relatorios/repasses-curia}"><i class="bi bi-send-check"></i><span>Repasses</span></a>
+      <a class="nav-link-custom" sec:authorize="hasAnyRole('ADMINISTRADOR','FINANCEIRO','CONSULTA')" th:href="@{/relatorios/projetos-obras}"><i class="bi bi-building-gear"></i><span>Projetos / Obras</span></a>
+    </details>
+
+    <details class="nav-group-section" th:attr="open=${uri.startsWith('/usuarios') ? 'open' : null}" sec:authorize="hasRole('ADMINISTRADOR')">
+      <summary class="nav-group-title">Administração</summary>
+      <a class="nav-link-custom" th:href="@{/usuarios}"><i class="bi bi-shield-lock"></i><span>Usuários</span></a>
+    </details>
+  </nav>
+</aside>
+
+<div th:fragment="feedback" aria-live="polite" class="my-2">
+  <div class="alert alert-success d-flex align-items-center gap-2 shadow-sm border-0 py-2 px-3 mb-2" role="alert" th:if="${successMessage}">
+    <i class="bi bi-check-circle-fill text-success fs-5 flex-shrink-0"></i>
+    <div th:text="${successMessage}"></div>
+  </div>
+  <div class="alert alert-danger d-flex align-items-center gap-2 shadow-sm border-0 py-2 px-3 mb-2" role="alert" th:if="${errorMessage}">
+    <i class="bi bi-exclamation-triangle-fill text-danger fs-5 flex-shrink-0"></i>
+    <div th:text="${errorMessage}"></div>
+  </div>
+  <div class="alert alert-warning d-flex align-items-center gap-2 shadow-sm border-0 py-2 px-3 mb-2" role="alert" th:if="${businessError}">
+    <i class="bi bi-exclamation-circle-fill text-warning fs-5 flex-shrink-0"></i>
+    <div th:text="${businessError}"></div>
+  </div>
+</div>
+
+<div th:fragment="formErrors" th:if="${#fields.hasErrors()}" class="alert alert-danger d-flex align-items-start gap-2 shadow-sm border-0 py-2 px-3 mb-3" role="alert">
+  <i class="bi bi-exclamation-triangle-fill text-danger fs-5 flex-shrink-0"></i>
+  <div>
+    <div class="fw-semibold">Não foi possível salvar. Corrija os itens abaixo:</div>
+    <ul class="mb-0 small">
+      <li th:each="err : ${#fields.allErrors()}" th:text="${err}"></li>
+    </ul>
+  </div>
+</div>
+
+<section th:fragment="empty-state(title, message)" class="card border border-2 border-dashed bg-light text-center p-4 p-md-5 my-4" role="status">
+  <div class="d-inline-flex align-items-center justify-content-center bg-white rounded-circle shadow-sm mx-auto mb-3" style="width: 52px; height: 52px;">
+    <i class="bi bi-inbox text-secondary fs-3"></i>
+  </div>
+  <h2 class="h5 fw-bold text-dark mb-1" th:text="${title}">Nenhum registro encontrado</h2>
+  <p class="text-muted mb-0 small" th:text="${message}">Ainda não há registros para exibir.</p>
+</section>
+
+</body>
+</html>

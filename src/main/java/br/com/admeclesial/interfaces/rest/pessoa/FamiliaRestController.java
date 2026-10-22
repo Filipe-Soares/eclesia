@@ -1,0 +1,4 @@
+package br.com.admeclesial.interfaces.rest.pessoa;
+
+import br.com.admeclesial.application.pessoa.*; import br.com.admeclesial.domain.pessoa.Familia; import jakarta.validation.Valid; import org.springframework.web.bind.annotation.*; import java.util.*;
+@RestController @RequestMapping("/api/v1/familias") public class FamiliaRestController { final FamiliaApplicationService s; public FamiliaRestController(FamiliaApplicationService s){this.s=s;} @PostMapping public Familia criar(@Valid @RequestBody FamiliaRequest r){return s.criar(r);} @GetMapping public List<Familia> listar(){return s.listar();} @GetMapping("/{uuid}") public Familia buscar(@PathVariable UUID uuid){return s.buscar(uuid);} @PutMapping("/{uuid}") public Familia atualizar(@PathVariable UUID uuid,@Valid @RequestBody FamiliaRequest r){return s.atualizar(uuid,r);} @PostMapping("/{uuid}/inativar") public Familia inativar(@PathVariable UUID uuid){return s.inativar(uuid);} }

@@ -1,0 +1,6 @@
+package br.com.admeclesial.application.relatorio;
+import br.com.admeclesial.application.usuario.SegurancaOrganizacaoService; import br.com.admeclesial.infrastructure.persistence.relatorio.RelatorioContaPagarRepository; import org.junit.jupiter.api.Test; import org.junit.jupiter.api.extension.ExtendWith; import org.mockito.Mock; import org.mockito.junit.jupiter.MockitoExtension; import java.time.LocalDate; import java.util.UUID; import static org.junit.jupiter.api.Assertions.*; import static org.mockito.Mockito.*;
+@ExtendWith(MockitoExtension.class) class RelatorioContaPagarApplicationServiceTest { @Mock RelatorioContaPagarRepository repo; @Mock SegurancaOrganizacaoService seguranca;
+ @Test void deveExigirOrganizacao(){var s=new RelatorioContaPagarApplicationService(repo,seguranca);var f=new RelatorioContaPagarFiltro(null,null,null,null,null,false,0,25);assertThrows(IllegalArgumentException.class,()->s.pesquisar(f));}
+ @Test void deveValidarPeriodoAntesDaConsulta(){var s=new RelatorioContaPagarApplicationService(repo,seguranca);var org=UUID.randomUUID();var f=new RelatorioContaPagarFiltro(org,LocalDate.of(2026,2,2),LocalDate.of(2026,2,1),null,null,false,0,25);assertThrows(IllegalArgumentException.class,()->s.pesquisar(f));verifyNoInteractions(seguranca,repo);}
+}

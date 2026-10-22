@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: assets('Novo Usuário')}">
+  <meta charset="UTF-8">
+  <title>Novo usuário - ADM Eclesial</title>
+</head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+
+<div class="app-shell">
+  <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+  
+  <main class="app-main">
+    <div class="page">
+      
+      <!-- Cabeçalho -->
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-4 pb-2 border-bottom">
+        <div>
+          <h1 class="h3 fw-bold text-dark mb-1">
+            <i class="bi bi-person-lock text-primary me-2"></i>Novo Usuário
+          </h1>
+          <p class="text-muted small mb-0">Crie credenciais e atribua perfis e organizações autorizadas</p>
+        </div>
+        <div>
+          <a class="btn btn-outline-secondary d-flex align-items-center gap-1" th:href="@{/usuarios}">
+            <i class="bi bi-arrow-left"></i>
+            <span>Voltar para Lista</span>
+          </a>
+        </div>
+      </div>
+
+      <div th:replace="~{fragments/layout :: feedback}"></div>
+
+      <!-- Formulário em Card -->
+      <div class="card border-0 shadow-sm p-4 p-md-5 mb-4" style="max-width: 860px;">
+        <form th:action="@{/usuarios}" method="post">
+          
+          <div class="row g-3">
+            
+            <div class="col-12">
+              <label class="form-label small fw-semibold text-muted" for="pessoaUuid">Pessoa Associada <span class="text-danger">*</span></label>
+              <select id="pessoaUuid" name="pessoaUuid" class="form-select" required autofocus>
+                <option value="">Selecione uma pessoa</option>
+                <option th:each="p : ${pessoas}" th:value="${p.uuid}" th:text="${p.nome}"></option>
+              </select>
+            </div>
+
+            <div class="col-12 col-md-6">
+              <label class="form-label small fw-semibold text-muted" for="login">Login / Usuário <span class="text-danger">*</span></label>
+              <div class="input-group">
+                <span class="input-group-text bg-light text-muted"><i class="bi bi-person"></i></span>
+                <input id="login" type="text" name="login" class="form-control" placeholder="ex: joao.silva" required>
+              </div>
+            </div>
+
+            <div class="col-12 col-md-6">
+              <label class="form-label small fw-semibold text-muted" for="senha">Senha <span class="text-danger">*</span></label>
+              <div class="input-group">
+                <span class="input-group-text bg-light text-muted"><i class="bi bi-key"></i></span>
+                <input id="senha" type="password" name="senha" class="form-control" placeholder="Senha de acesso" required>
+              </div>
+            </div>
+
+            <div class="col-12 mt-4">
+              <label class="form-label small fw-semibold text-dark mb-2">Perfis de Acesso</label>
+              <div class="p-3 bg-light rounded border border-light-subtle d-flex gap-3 flex-wrap">
+                <div class="form-check" th:each="p : ${perfis}">
+                  <input class="form-check-input" type="checkbox" name="perfis" th:value="${p}" th:id="${'perfil_' + p}">
+                  <label class="form-check-label small fw-medium text-dark" th:for="${'perfil_' + p}" th:text="${p}"></label>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-12 mt-3">
+              <label class="form-label small fw-semibold text-dark mb-2">Organizações Autorizadas</label>
+              <div class="p-3 bg-light rounded border border-light-subtle row g-2">
+                <div class="col-12 col-sm-6" th:each="o : ${organizacoes}">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="organizacoes" th:value="${o.uuid}" th:id="${'org_' + o.uuid}">
+                    <label class="form-check-label small text-dark" th:for="${'org_' + o.uuid}" th:text="${o.nome}"></label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-12 mt-3">
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" name="ativo" value="true" id="ativo" checked>
+                <label class="form-check-label small fw-semibold text-dark" for="ativo">Usuário Ativo</label>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="d-flex gap-2 align-items-center mt-4 pt-3 border-top">
+            <button type="submit" class="btn btn-eclesial px-4 shadow-sm">
+              <i class="bi bi-check-lg me-1"></i> Salvar Usuário
+            </button>
+            <a class="btn btn-outline-secondary px-3" th:href="@{/usuarios}">Cancelar</a>
+          </div>
+
+        </form>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+</body>
+</html>

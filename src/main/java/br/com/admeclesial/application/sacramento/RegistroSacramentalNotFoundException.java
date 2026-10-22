@@ -1,0 +1,1 @@
+package br.com.admeclesial.application.sacramento; import java.util.UUID; public class RegistroSacramentalNotFoundException extends RuntimeException { public RegistroSacramentalNotFoundException(UUID uuid){super("Registro sacramental não encontrado: "+uuid);} }

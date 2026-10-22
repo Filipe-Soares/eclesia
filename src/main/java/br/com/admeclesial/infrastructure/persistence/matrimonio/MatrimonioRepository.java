@@ -1,0 +1,1 @@
+package br.com.admeclesial.infrastructure.persistence.matrimonio; import br.com.admeclesial.domain.matrimonio.Matrimonio; import org.springframework.data.jpa.repository.JpaRepository; import java.util.*; public interface MatrimonioRepository extends JpaRepository<Matrimonio,Long>{Optional<Matrimonio> findByUuid(UUID uuid); Optional<Matrimonio> findByProcessoId(Long id);}

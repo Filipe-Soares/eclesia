@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: assets(${catequese.nome})}">
+  <meta charset="UTF-8">
+  <title>Detalhes da catequese - ADM Eclesial</title>
+</head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+
+<div class="app-shell">
+  <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+  
+  <main class="app-main">
+    <div class="page">
+      
+      <!-- Cabeçalho -->
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-4 pb-2 border-bottom">
+        <div>
+          <div class="d-flex align-items-center gap-2 mb-1">
+            <h1 class="h3 fw-bold text-dark mb-0" th:text="${catequese.nome}">Catequese</h1>
+            <span class="badge" th:classappend="${catequese.status == 'ATIVA' or catequese.status == 'ATIVO'} ? 'bg-success-subtle text-success border border-success-subtle' : 'bg-secondary-subtle text-dark border'" th:text="${catequese.status}"></span>
+          </div>
+          <p class="text-muted small mb-0">Detalhes do ciclo de catequese</p>
+        </div>
+        <div class="d-flex gap-2 flex-wrap">
+          <a class="btn btn-outline-secondary d-flex align-items-center gap-1" th:href="@{/catequeses}">
+            <i class="bi bi-arrow-left"></i>
+            <span>Voltar</span>
+          </a>
+          <a class="btn btn-outline-primary d-flex align-items-center gap-1" th:href="@{/catequeses/{uuid}/etapas(uuid=${catequese.uuid})}">
+            <i class="bi bi-layers"></i>
+            <span>Gerenciar Etapas</span>
+          </a>
+          <a class="btn btn-eclesial d-flex align-items-center gap-1 shadow-sm" th:href="@{/catequeses/{uuid}/editar(uuid=${catequese.uuid})}">
+            <i class="bi bi-pencil"></i>
+            <span>Editar</span>
+          </a>
+        </div>
+      </div>
+
+      <div th:replace="~{fragments/layout :: feedback}"></div>
+
+      <!-- Detalhes em Card -->
+      <div class="card border-0 shadow-sm p-4 mb-4" style="max-width: 860px;">
+        <div class="row g-3">
+          <div class="col-12 col-sm-6">
+            <label class="form-label text-muted small fw-semibold mb-1">Organização Eclesial</label>
+            <div class="fw-medium text-dark bg-light p-2 rounded border border-light-subtle" th:text="${catequese.organizacaoNome}"></div>
+          </div>
+          <div class="col-12 col-sm-6">
+            <label class="form-label text-muted small fw-semibold mb-1">Período de Realização</label>
+            <div class="fw-medium text-dark bg-light p-2 rounded border border-light-subtle">
+              <span th:text="${catequese.dataInicio != null ? #temporals.format(catequese.dataInicio, 'dd/MM/yyyy') : 'Não definido'}"></span>
+              <span> a </span>
+              <span th:text="${catequese.dataFim != null ? #temporals.format(catequese.dataFim, 'dd/MM/yyyy') : 'Não definido'}"></span>
+            </div>
+          </div>
+          <div class="col-12">
+            <label class="form-label text-muted small fw-semibold mb-1">Descrição</label>
+            <div class="text-dark bg-light p-2 rounded border border-light-subtle" th:text="${catequese.descricao ?: 'Sem descrição informada.'}"></div>
+          </div>
+          <div class="col-12">
+            <label class="form-label text-muted small fw-semibold mb-1">Observações</label>
+            <div class="text-dark bg-light p-2 rounded border border-light-subtle" th:text="${catequese.observacao ?: 'Nenhuma observação cadastrada.'}"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+</body>
+</html>

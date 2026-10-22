@@ -1,0 +1,13 @@
+package br.com.admeclesial.application.sacramento;
+import br.com.admeclesial.application.usuario.SegurancaOrganizacaoService; import org.springframework.beans.factory.annotation.Autowired;
+import br.com.admeclesial.domain.sacramento.*; import br.com.admeclesial.infrastructure.persistence.sacramento.*; import org.springframework.stereotype.Service; import org.springframework.transaction.annotation.Transactional; import org.springframework.util.StringUtils; import java.util.*;
+@Service public class RegistroSacramentalApplicationService {
+ @Autowired private SegurancaOrganizacaoService seguranca;
+ private final RegistroSacramentalRepository repository; private final SacramentoRepository sacramentoRepository;
+ public RegistroSacramentalApplicationService(RegistroSacramentalRepository r,SacramentoRepository s){repository=r;sacramentoRepository=s;}
+ @Transactional public RegistroSacramentalResponse salvar(RegistroSacramentalRequest r){var s=sacramentoRepository.findByUuid(r.sacramentoUuid()).orElseThrow(()->new SacramentoBusinessException("Sacramento não encontrado."));validarAcesso(s.getOrganizacaoEclesial().getUuid()); if(s.getStatus()==StatusSacramento.CANCELADO)throw new SacramentoBusinessException("Não é possível registrar dados de livro de sacramento cancelado."); var e=repository.findBySacramentoId(s.getId()).orElseGet(RegistroSacramental::new);e.setSacramento(s);e.setLivro(text(r.livro()));e.setFolha(text(r.folha()));e.setTermo(text(r.termo()));e.setNumeroRegistro(text(r.numeroRegistro()));e.setObservacao(text(r.observacao()));return toResponse(repository.save(e));}
+ @Transactional(readOnly=true) public RegistroSacramentalResponse buscarPorSacramento(UUID uuid){var s=sacramentoRepository.findByUuid(uuid).orElseThrow(()->new SacramentoBusinessException("Sacramento não encontrado."));validarAcesso(s.getOrganizacaoEclesial().getUuid());return repository.findBySacramentoId(s.getId()).map(this::toResponse).orElse(null);}
+ @Transactional(readOnly=true) public RegistroSacramentalResponse buscar(UUID uuid){var e=repository.findByUuid(uuid).orElseThrow(()->new RegistroSacramentalNotFoundException(uuid));validarAcesso(e.getSacramento().getOrganizacaoEclesial().getUuid());return toResponse(e);}
+ private String text(String v){return StringUtils.hasText(v)?v.trim():null;} private RegistroSacramentalResponse toResponse(RegistroSacramental e){return new RegistroSacramentalResponse(e.getUuid(),e.getSacramento().getUuid(),e.getLivro(),e.getFolha(),e.getTermo(),e.getNumeroRegistro(),e.getObservacao());}
+ private void validarAcesso(UUID u){if(seguranca!=null)seguranca.validarAcesso(u);}
+}

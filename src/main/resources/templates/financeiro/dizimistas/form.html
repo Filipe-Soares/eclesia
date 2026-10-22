@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: assets(${dizimistaUuid != null ? 'Editar Dizimista' : 'Novo Dizimista'})}">
+</head>
+<body>
+    <header th:replace="~{fragments/layout :: header}"></header>
+    <div class="app-shell">
+        <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+        <main class="app-main">
+            <div class="page">
+                <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                    <div>
+                        <h1 class="h3 mb-1 text-gray-800" th:text="${dizimistaUuid != null ? 'Editar Dizimista' : 'Novo Dizimista'}">Novo Dizimista</h1>
+                        <p class="text-muted mb-0">Informe pessoa, organização e período de vigência</p>
+                    </div>
+                    <a href="/financeiro/dizimistas" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i> Voltar</a>
+                </div>
+
+                <div th:replace="~{fragments/layout :: feedback}"></div>
+
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-4">
+                        <form method="post" th:action="${dizimistaUuid != null ? '/financeiro/dizimistas/' + dizimistaUuid + '/editar' : '/financeiro/dizimistas'}" th:object="${request}">
+                        <div th:replace="~{fragments/layout :: formErrors}"></div>
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Pessoa <span class="text-danger">*</span></label>
+                                    <select th:field="*{pessoaUuid}" class="form-select" required>
+                                        <option value="">Selecione</option>
+                                        <option th:each="p:${pessoas}" th:value="${p.uuid}" th:text="${p.nome}"></option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Organização <span class="text-danger">*</span></label>
+                                    <select th:field="*{organizacaoEclesialUuid}" class="form-select" required>
+                                        <option value="">Selecione</option>
+                                        <option th:each="o:${organizacoes}" th:value="${o.uuid}" th:text="${o.nome}"></option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-4">
+                                    <label class="form-label fw-semibold">Início da Vigência <span class="text-danger">*</span></label>
+                                    <input type="date" th:field="*{dataInicio}" class="form-control" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fw-semibold">Fim da Vigência</label>
+                                    <input type="date" th:field="*{dataFim}" class="form-control">
+                                </div>
+                                <div class="col-md-4 d-flex align-items-end">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" th:field="*{ativo}" id="ativo">
+                                        <label class="form-check-label" for="ativo">Dizimista ativo</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label fw-semibold">Observação</label>
+                                <textarea th:field="*{observacao}" rows="3" class="form-control"></textarea>
+                            </div>
+                            <div class="d-flex justify-content-end gap-2 pt-3 border-top">
+                                <a href="/financeiro/dizimistas" class="btn btn-outline-secondary">Cancelar</a>
+                                <button type="submit" class="btn btn-eclesial"><i class="bi bi-check-lg me-1"></i> <span th:text="${dizimistaUuid != null ? 'Atualizar Dizimista' : 'Salvar Dizimista'}">Salvar</span></button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

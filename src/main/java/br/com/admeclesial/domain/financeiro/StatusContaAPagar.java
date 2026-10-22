@@ -1,0 +1,1 @@
+package br.com.admeclesial.domain.financeiro; public enum StatusContaAPagar { ABERTA, PARCIALMENTE_PAGA, PAGA, CANCELADA, VENCIDA }

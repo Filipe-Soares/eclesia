@@ -1,0 +1,1 @@
+package br.com.admeclesial.application.sacramento; import java.util.UUID; public class SacramentoNotFoundException extends RuntimeException { public SacramentoNotFoundException(UUID uuid){super("Sacramento não encontrado: "+uuid);} }

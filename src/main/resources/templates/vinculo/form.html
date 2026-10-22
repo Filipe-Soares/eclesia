@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: assets(${vinculoUuid != null ? 'Editar Vínculo' : 'Novo Vínculo'})}">
+  <meta charset="UTF-8">
+  <title th:text="${vinculoUuid != null ? 'Editar Vínculo - ADM Eclesial' : 'Novo vínculo - ADM Eclesial'}">Vínculo - ADM Eclesial</title>
+</head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+
+<div class="app-shell">
+  <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+  
+  <main class="app-main">
+    <div class="page">
+      
+      <!-- Cabeçalho -->
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-4 pb-2 border-bottom">
+        <div>
+          <h1 class="h3 fw-bold text-dark mb-1">
+            <i class="bi bi-link-45deg text-primary me-2"></i>
+            <span th:text="${vinculoUuid != null ? 'Editar Vínculo' : 'Vínculo Pessoa × Organização'}">Vínculo Pessoa × Organização</span>
+          </h1>
+          <p class="text-muted small mb-0" th:text="${vinculoUuid != null ? 'Atualize os dados da associação entre a pessoa e a organização eclesial' : 'Associe uma pessoa a uma organização eclesial'}">Associe uma pessoa a uma organização eclesial</p>
+        </div>
+        <div>
+          <a class="btn btn-outline-secondary d-flex align-items-center gap-1" th:href="@{/vinculos-pessoa-organizacao}">
+            <i class="bi bi-arrow-left"></i>
+            <span>Voltar para Vínculos</span>
+          </a>
+        </div>
+      </div>
+
+      <div th:replace="~{fragments/layout :: feedback}"></div>
+
+      <!-- Formulário em Card -->
+      <div class="card border-0 shadow-sm p-4 p-md-5 mb-4" style="max-width: 860px;">
+        <form th:action="${vinculoUuid != null ? '/vinculos-pessoa-organizacao/' + vinculoUuid + '/editar' : '/vinculos-pessoa-organizacao'}" th:object="${form}" method="post">
+      <div th:replace="~{fragments/layout :: formErrors}"></div>
+          
+          <div class="row g-3">
+            
+            <div class="col-12 col-md-6">
+              <label class="form-label small fw-semibold text-muted" for="pessoaUuid">Pessoa <span class="text-danger">*</span></label>
+              <select id="pessoaUuid" class="form-select" th:field="*{pessoaUuid}" required autofocus>
+                <option value="">Selecione a pessoa</option>
+                <option th:each="p : ${pessoas}" th:value="${p.uuid}" th:text="${p.nome}"></option>
+              </select>
+            </div>
+
+            <div class="col-12 col-md-6">
+              <label class="form-label small fw-semibold text-muted" for="organizacaoUuid">Organização Eclesial <span class="text-danger">*</span></label>
+              <select id="organizacaoUuid" class="form-select" th:field="*{organizacaoUuid}" required>
+                <option value="">Selecione a organização</option>
+                <option th:each="o : ${organizacoes}" th:value="${o.uuid}" th:text="${o.nome}"></option>
+              </select>
+            </div>
+
+            <div class="col-12 col-md-4">
+              <label class="form-label small fw-semibold text-muted" for="dataInicio">Data de Início <span class="text-danger">*</span></label>
+              <input id="dataInicio" type="date" class="form-control" th:field="*{dataInicio}" required>
+            </div>
+
+            <div class="col-12 col-md-4">
+              <label class="form-label small fw-semibold text-muted" for="dataFim">Data de Término</label>
+              <input id="dataFim" type="date" class="form-control" th:field="*{dataFim}">
+            </div>
+
+            <div class="col-12 col-md-4">
+              <label class="form-label small fw-semibold text-muted" for="status">Situação do Vínculo <span class="text-danger">*</span></label>
+              <select id="status" class="form-select" th:field="*{status}">
+                <option th:each="s : ${statusList}" th:value="${s}" th:text="${s}"></option>
+              </select>
+            </div>
+
+            <div class="col-12 mt-3">
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="principal" th:field="*{principal}">
+                <label class="form-check-label small fw-semibold text-dark" for="principal">Vínculo Principal da Pessoa</label>
+              </div>
+            </div>
+
+            <div class="col-12">
+              <label class="form-label small fw-semibold text-muted" for="observacao">Observações</label>
+              <textarea id="observacao" rows="3" class="form-control" th:field="*{observacao}" placeholder="Observações sobre o vínculo"></textarea>
+            </div>
+
+          </div>
+
+          <div class="d-flex gap-2 align-items-center mt-4 pt-3 border-top">
+            <button type="submit" class="btn btn-eclesial px-4 shadow-sm">
+              <i class="bi bi-check-lg me-1"></i> <span th:text="${vinculoUuid != null ? 'Atualizar Vínculo' : 'Salvar Vínculo'}">Salvar Vínculo</span>
+            </button>
+            <a class="btn btn-outline-secondary px-3" th:href="@{/vinculos-pessoa-organizacao}">Cancelar</a>
+          </div>
+
+        </form>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+</body>
+</html>

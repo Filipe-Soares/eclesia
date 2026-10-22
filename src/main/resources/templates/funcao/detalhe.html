@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: assets(${funcao.nome})}">
+  <meta charset="UTF-8">
+  <title th:text="${funcao.nome} + ' - ADM Eclesial'">Função</title>
+</head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+
+<div class="app-shell">
+  <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+  
+  <main class="app-main">
+    <div class="page">
+      
+      <!-- Cabeçalho -->
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-4 pb-2 border-bottom">
+        <div>
+          <h1 class="h3 fw-bold text-dark mb-1" th:text="${funcao.nome}">Função</h1>
+          <p class="text-muted small mb-0">Detalhes da função eclesial</p>
+        </div>
+        <div class="d-flex gap-2">
+          <a class="btn btn-outline-secondary d-flex align-items-center gap-1" th:href="@{/funcoes-eclesiais}">
+            <i class="bi bi-arrow-left"></i>
+            <span>Voltar para Lista</span>
+          </a>
+          <a class="btn btn-outline-primary d-flex align-items-center gap-1" th:href="@{/funcoes-eclesiais/{uuid}/editar(uuid=${funcao.uuid})}">
+            <i class="bi bi-pencil"></i>
+            <span>Editar</span>
+          </a>
+          <a class="btn btn-eclesial d-flex align-items-center gap-1 shadow-sm" th:href="@{/funcoes-eclesiais/nova}">
+            <i class="bi bi-plus-lg"></i>
+            <span>Nova Função</span>
+          </a>
+        </div>
+      </div>
+
+      <div th:replace="~{fragments/layout :: feedback}"></div>
+
+      <!-- Detalhes em Card -->
+      <div class="card border-0 shadow-sm p-4 mb-4" style="max-width: 760px;">
+        <div class="row g-3">
+          <div class="col-12 col-sm-6">
+            <label class="form-label text-muted small fw-semibold mb-1">Código</label>
+            <div class="fw-bold text-dark bg-light p-2 rounded border border-light-subtle font-monospace" th:text="${funcao.codigo}"></div>
+          </div>
+          <div class="col-12 col-sm-6">
+            <label class="form-label text-muted small fw-semibold mb-1">Exclusiva na Organização</label>
+            <div class="p-2">
+              <span class="badge" th:classappend="${funcao.exclusivoNaOrganizacao} ? 'bg-primary text-white' : 'bg-secondary text-white'" th:text="${funcao.exclusivoNaOrganizacao ? 'Sim (Apenas uma pessoa)' : 'Não (Múltiplas pessoas)'}"></span>
+            </div>
+          </div>
+          <div class="col-12">
+            <label class="form-label text-muted small fw-semibold mb-1">Identificador (UUID)</label>
+            <div class="font-monospace text-dark bg-light p-2 rounded border border-light-subtle small" th:text="${funcao.uuid}"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+</body>
+</html>

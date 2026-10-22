@@ -1,0 +1,1 @@
+package br.com.admeclesial.application.organizacao; import java.util.UUID; public record FuncaoEclesialResponse(UUID uuid,String codigo,String nome,String descricao,boolean ativa,boolean exclusivoNaOrganizacao){}

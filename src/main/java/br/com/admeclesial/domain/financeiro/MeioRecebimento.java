@@ -1,0 +1,1 @@
+package br.com.admeclesial.domain.financeiro; public enum MeioRecebimento { DINHEIRO, PIX, TED, DOC, BOLETO, CARTAO, CHEQUE, OUTRO }

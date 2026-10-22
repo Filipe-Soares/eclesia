@@ -1,0 +1,1 @@
+package br.com.admeclesial.infrastructure.persistence.pessoa; import br.com.admeclesial.domain.pessoa.Familia; import org.springframework.data.jpa.repository.JpaRepository; import java.util.*; public interface FamiliaRepository extends JpaRepository<Familia,Long>{ Optional<Familia> findByUuid(UUID uuid); }

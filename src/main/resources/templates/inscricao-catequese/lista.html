@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: assets('Inscrições - ' + ${turma.nome} + ' - ADM Eclesial')}">
+</head>
+<body>
+    <header th:replace="~{fragments/layout :: header}"></header>
+    <div class="app-shell">
+        <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+        <main class="app-main">
+            <div class="page">
+                <div th:replace="~{fragments/layout :: feedback}"></div>
+
+                <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                    <div>
+                        <h1 class="h3 mb-1 text-gray-800" th:text="'Inscrições: ' + ${turma.nome}"></h1>
+                        <p class="text-muted mb-0">
+                            <strong>Etapa:</strong> <span th:text="${turma.etapaNome}"></span> | 
+                            <strong>Ano:</strong> <span th:text="${turma.ano ?: '-'}"></span>
+                        </p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <a th:href="@{/catequeses/etapas/{etapaUuid}/turmas(etapaUuid=${turma.etapaUuid})}" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left me-1"></i> Voltar para Turmas
+                        </a>
+                        <a th:href="@{/catequeses/turmas/{uuid}/inscricoes/nova(uuid=${turma.uuid})}" class="btn btn-eclesial">
+                            <i class="bi bi-person-plus me-1"></i> Nova Inscrição
+                        </a>
+                    </div>
+                </div>
+
+                <th:block th:if="${#lists.isEmpty(inscricoes)}">
+                    <section th:replace="~{fragments/layout :: empty-state('Nenhuma inscrição cadastrada.', 'Cadastre catequizandos nesta turma.')}"></section>
+                </th:block>
+
+                <div class="card shadow-sm border-0" th:unless="${#lists.isEmpty(inscricoes)}">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Catequizando</th>
+                                    <th>Data da Inscrição</th>
+                                    <th>Status</th>
+                                    <th>Observação</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="inscricao : ${inscricoes}">
+                                    <td class="fw-semibold text-dark" th:text="${inscricao.pessoaNome}"></td>
+                                    <td>
+                                        <i class="bi bi-calendar3 me-1 text-muted"></i>
+                                        <span th:text="${#temporals.format(inscricao.dataInscricao, 'dd/MM/yyyy')}"></span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle" th:text="${inscricao.status}"></span>
+                                    </td>
+                                    <td class="text-muted small" th:text="${inscricao.observacao ?: '-'}"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

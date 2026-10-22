@@ -1,0 +1,1 @@
+package br.com.admeclesial.application.financeiro; import jakarta.validation.constraints.*; import java.time.LocalDate; import java.util.UUID; public record DizimistaRequest(@NotNull UUID pessoaUuid,@NotNull UUID organizacaoEclesialUuid,@NotNull LocalDate dataInicio,LocalDate dataFim,Boolean ativo,String observacao){}

@@ -1,0 +1,1 @@
+package br.com.admeclesial.application.pessoa; import jakarta.validation.constraints.*; public record FamiliaRequest(@NotBlank String nome,Boolean ativo){}

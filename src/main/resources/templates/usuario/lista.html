@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: assets('Usuários')}">
+  <meta charset="UTF-8">
+  <title>Usuários - ADM Eclesial</title>
+</head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+
+<div class="app-shell">
+  <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+  
+  <main class="app-main">
+    <div class="page">
+      
+      <!-- Cabeçalho -->
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-4 pb-2 border-bottom">
+        <div>
+          <h1 class="h3 fw-bold text-dark mb-1">
+            <i class="bi bi-shield-lock text-primary me-2"></i>Gestão de Usuários
+          </h1>
+          <p class="text-muted small mb-0">Controle de credenciais, perfis e permissões de acesso</p>
+        </div>
+        <div>
+          <a class="btn btn-eclesial d-flex align-items-center gap-1 shadow-sm" th:href="@{/usuarios/novo}">
+            <i class="bi bi-person-plus-fill"></i>
+            <span>Novo Usuário</span>
+          </a>
+        </div>
+      </div>
+
+      <div th:replace="~{fragments/layout :: feedback}"></div>
+
+      <!-- Empty State -->
+      <th:block th:if="${#lists.isEmpty(usuarios)}">
+        <section th:replace="~{fragments/layout :: empty-state('Nenhum usuário cadastrado.', 'Ainda não há usuários cadastrados para exibir.')}">
+        </section>
+      </th:block>
+
+      <!-- Tabela de Listagem -->
+      <div class="card border-0 shadow-sm" th:unless="${#lists.isEmpty(usuarios)}">
+        <div class="table-responsive">
+          <table class="table table-hover table-striped align-middle mb-0">
+            <thead class="table-light">
+              <tr>
+                <th class="ps-3">Login</th>
+                <th>Pessoa Associada</th>
+                <th>Situação</th>
+                <th class="pe-3">Perfis de Acesso</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="u : ${usuarios}">
+                <td class="ps-3 fw-bold text-dark">
+                  <i class="bi bi-person-circle text-muted me-1"></i>
+                  <span th:text="${u.login}"></span>
+                </td>
+                <td class="text-muted" th:text="${u.pessoaNome}"></td>
+                <td>
+                  <span class="badge" th:classappend="${u.ativo} ? 'bg-success-subtle text-success border border-success-subtle' : 'bg-danger-subtle text-danger border border-danger-subtle'" th:text="${u.ativo ? 'Ativo' : 'Inativo'}"></span>
+                </td>
+                <td class="pe-3">
+                  <div class="d-flex gap-1 flex-wrap">
+                    <span class="badge bg-secondary-subtle text-dark border" th:each="perfil : ${u.perfis}" th:text="${perfil}"></span>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+</body>
+</html>

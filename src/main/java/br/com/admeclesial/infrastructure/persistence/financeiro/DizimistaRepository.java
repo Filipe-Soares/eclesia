@@ -1,0 +1,1 @@
+package br.com.admeclesial.infrastructure.persistence.financeiro; import br.com.admeclesial.domain.financeiro.Dizimista; import org.springframework.data.jpa.repository.JpaRepository; import java.util.*; public interface DizimistaRepository extends JpaRepository<Dizimista,Long>{ Optional<Dizimista> findByUuid(UUID uuid); }

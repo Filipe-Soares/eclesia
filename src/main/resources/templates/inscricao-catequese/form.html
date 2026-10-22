@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: assets('Nova Inscrição - ADM Eclesial')}">
+</head>
+<body>
+    <header th:replace="~{fragments/layout :: header}"></header>
+    <div class="app-shell">
+        <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+        <main class="app-main">
+            <div class="page">
+                <div th:replace="~{fragments/layout :: feedback}"></div>
+
+                <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                    <div>
+                        <h1 class="h3 mb-1 text-gray-800">Nova Inscrição</h1>
+                        <p class="text-muted mb-0">
+                            <strong>Turma:</strong> <span th:text="${turma.nome}"></span> | 
+                            <strong>Etapa:</strong> <span th:text="${turma.etapaNome}"></span>
+                        </p>
+                    </div>
+                    <a th:href="@{/catequeses/turmas/{uuid}/inscricoes(uuid=${turma.uuid})}" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left me-1"></i> Voltar para Inscrições
+                    </a>
+                </div>
+
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-4">
+                        <form method="post" th:action="@{/catequeses/turmas/{uuid}/inscricoes(uuid=${turma.uuid})}" th:object="${request}">
+                        <div th:replace="~{fragments/layout :: formErrors}"></div>
+
+                            <div th:if="${#fields.hasGlobalErrors()}" class="alert alert-danger mb-4">
+                                <ul class="mb-0">
+                                    <li th:each="error : ${#fields.globalErrors()}" th:text="${error}"></li>
+                                </ul>
+                            </div>
+
+                            <input type="hidden" th:field="*{turmaCatequeseUuid}">
+
+                            <div class="mb-3">
+                                <label for="pessoaUuid" class="form-label fw-semibold">Pessoa / Catequizando <span class="text-danger">*</span></label>
+                                <select id="pessoaUuid" th:field="*{pessoaUuid}" class="form-select" required>
+                                    <option value="">Selecione uma pessoa</option>
+                                    <option th:each="pessoa : ${pessoas}"
+                                            th:value="${pessoa.uuid}"
+                                            th:text="${pessoa.nome + (pessoa.cpf != null ? ' - CPF ' + pessoa.cpf : '')}">
+                                    </option>
+                                </select>
+                                <div class="text-danger small mt-1" th:if="${#fields.hasErrors('pessoaUuid')}" th:errors="*{pessoaUuid}"></div>
+                            </div>
+
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-6">
+                                    <label for="dataInscricao" class="form-label fw-semibold">Data da Inscrição <span class="text-danger">*</span></label>
+                                    <input id="dataInscricao" type="date" th:field="*{dataInscricao}" class="form-control" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="status" class="form-label fw-semibold">Status <span class="text-danger">*</span></label>
+                                    <select id="status" th:field="*{status}" class="form-select" required>
+                                        <option th:each="status : ${statusList}" th:value="${status}" th:text="${status}"></option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="observacao" class="form-label fw-semibold">Observações</label>
+                                <textarea id="observacao" th:field="*{observacao}" class="form-control" rows="4" maxlength="5000" placeholder="Observações pertinentes à matrícula/inscrição..."></textarea>
+                            </div>
+
+                            <div class="d-flex justify-content-end gap-2 pt-3 border-top">
+                                <a th:href="@{/catequeses/turmas/{uuid}/inscricoes(uuid=${turma.uuid})}" class="btn btn-outline-secondary">
+                                    Cancelar
+                                </a>
+                                <button type="submit" class="btn btn-eclesial">
+                                    <i class="bi bi-check-lg me-1"></i> Salvar Inscrição
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: assets(${contaUuid != null ? 'Editar Conta Financeira' : 'Nova Conta Financeira'})}">
+</head>
+<body>
+    <header th:replace="~{fragments/layout :: header}"></header>
+    <div class="app-shell">
+        <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+        <main class="app-main">
+            <div class="page">
+                <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                    <div>
+                        <h1 class="h3 mb-1 text-gray-800" th:text="${contaUuid != null ? 'Editar Conta Financeira' : 'Nova Conta Financeira'}">Nova Conta Financeira</h1>
+                        <p class="text-muted mb-0">Informe organização, nome e tipo da conta</p>
+                    </div>
+                    <a href="/financeiro/contas" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i> Voltar</a>
+                </div>
+
+                <div th:replace="~{fragments/layout :: feedback}"></div>
+
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-4">
+                        <form method="post" th:action="${contaUuid != null ? '/financeiro/contas/' + contaUuid + '/editar' : '/financeiro/contas'}" th:object="${request}">
+                        <div th:replace="~{fragments/layout :: formErrors}"></div>
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Organização <span class="text-danger">*</span></label>
+                                    <select th:field="*{organizacaoEclesialUuid}" class="form-select" required>
+                                        <option value="">Selecione</option>
+                                        <option th:each="o:${organizacoes}" th:value="${o.uuid}" th:text="${o.nome}"></option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Tipo <span class="text-danger">*</span></label>
+                                    <select th:field="*{tipo}" class="form-select" required>
+                                        <option value="">Selecione</option>
+                                        <option th:each="x:${tipos}" th:value="${x}" th:text="${x}"></option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Nome <span class="text-danger">*</span></label>
+                                <input type="text" th:field="*{nome}" class="form-control" required placeholder="Ex: Conta Corrente Matriz">
+                            </div>
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-4">
+                                    <label class="form-label fw-semibold">Banco</label>
+                                    <input type="text" th:field="*{banco}" class="form-control">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fw-semibold">Agência</label>
+                                    <input type="text" th:field="*{agencia}" class="form-control">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fw-semibold">Número</label>
+                                    <input type="text" th:field="*{numero}" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-check mb-4">
+                                <input class="form-check-input" type="checkbox" th:field="*{ativo}" id="ativo">
+                                <label class="form-check-label" for="ativo">Conta ativa</label>
+                            </div>
+                            <div class="d-flex justify-content-end gap-2 pt-3 border-top">
+                                <a href="/financeiro/contas" class="btn btn-outline-secondary">Cancelar</a>
+                                <button type="submit" class="btn btn-eclesial"><i class="bi bi-check-lg me-1"></i> <span th:text="${contaUuid != null ? 'Atualizar Conta' : 'Salvar Conta'}">Salvar</span></button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: assets(${familiaUuid != null ? 'Editar Família' : 'Nova Família'})}">
+  <meta charset="UTF-8">
+  <title th:text="${familiaUuid != null ? 'Editar família - ADM Eclesial' : 'Nova família - ADM Eclesial'}">Família - ADM Eclesial</title>
+</head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+
+<div class="app-shell">
+  <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+
+  <main class="app-main">
+    <div class="page">
+
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-4 pb-2 border-bottom">
+        <div>
+          <h1 class="h3 fw-bold text-dark mb-1">
+            <span th:text="${familiaUuid != null ? 'Editar Família' : 'Nova Família'}">Família</span>
+          </h1>
+          <p class="text-muted small mb-0">Uma família é opcional e não é criada automaticamente ao cadastrar uma pessoa.</p>
+        </div>
+        <div>
+          <a class="btn btn-outline-secondary d-flex align-items-center gap-1" th:href="@{/familias}">
+            <i class="bi bi-arrow-left"></i>
+            <span>Voltar para Lista</span>
+          </a>
+        </div>
+      </div>
+
+      <div th:replace="~{fragments/layout :: feedback}"></div>
+
+      <div class="card border-0 shadow-sm p-4 p-md-5 mb-4" style="max-width: 720px;">
+        <form th:action="${familiaUuid != null ? '/familias/' + familiaUuid + '/editar' : '/familias'}" th:object="${request}" method="post">
+      <div th:replace="~{fragments/layout :: formErrors}"></div>
+
+          <div class="row g-3">
+            <div class="col-12">
+              <label class="form-label small fw-semibold text-muted" for="nome">Nome da Família <span class="text-danger">*</span></label>
+              <input id="nome" type="text" class="form-control" th:field="*{nome}" th:classappend="${#fields.hasErrors('nome')} ? 'is-invalid'" autofocus placeholder="Ex: Família Silva">
+              <div class="invalid-feedback" th:errors="*{nome}"></div>
+            </div>
+
+            <div class="col-12">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="ativo" th:field="*{ativo}">
+                <label class="form-check-label" for="ativo">Família ativa</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="d-flex gap-2 align-items-center mt-4 pt-3 border-top">
+            <button type="submit" class="btn btn-eclesial px-4 shadow-sm">
+              <i class="bi bi-check-lg me-1"></i>
+              <span th:text="${familiaUuid != null ? 'Atualizar Família' : 'Salvar Família'}">Salvar</span>
+            </button>
+            <a class="btn btn-outline-secondary px-3" th:href="@{/familias}">Cancelar</a>
+          </div>
+
+        </form>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+</body>
+</html>

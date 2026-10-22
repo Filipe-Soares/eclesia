@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: assets('Gerar Obrigação de Repasse')}">
+</head>
+<body>
+    <header th:replace="~{fragments/layout :: header}"></header>
+    <div class="app-shell">
+        <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+        <main class="app-main">
+            <div class="page">
+                <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                    <div>
+                        <h1 class="h3 mb-1 text-gray-800">Gerar Obrigação de Repasse</h1>
+                        <p class="text-muted mb-0">A geração preserva o snapshot do cálculo e cria a conta a pagar</p>
+                    </div>
+                    <a href="/financeiro/obrigacoes-repasse" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i> Voltar</a>
+                </div>
+
+                <div th:replace="~{fragments/layout :: feedback}"></div>
+
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-4">
+                        <form method="post" action="/financeiro/obrigacoes-repasse" th:object="${request}">
+                        <div th:replace="~{fragments/layout :: formErrors}"></div>
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Regra de Repasse <span class="text-danger">*</span></label>
+                                <select th:field="*{regraRepasseUuid}" class="form-select" required>
+                                    <option value="">Selecione</option>
+                                    <option th:each="r:${regras}" th:value="${r.uuid}" th:text="${r.tipoBase} + ' (' + ${r.periodicidade} + ')'"></option>
+                                </select>
+                            </div>
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-4">
+                                    <label class="form-label fw-semibold">Competência <span class="text-danger">*</span></label>
+                                    <input type="date" th:field="*{competencia}" class="form-control" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fw-semibold">Valor Base (R$) <span class="text-danger">*</span></label>
+                                    <input type="number" step="0.01" min="0" th:field="*{valorBase}" class="form-control" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fw-semibold">Exclusões (R$) <span class="text-danger">*</span></label>
+                                    <input type="number" step="0.01" min="0" th:field="*{valorExclusoes}" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-4">
+                                    <label class="form-label fw-semibold">Vencimento <span class="text-danger">*</span></label>
+                                    <input type="date" th:field="*{dataVencimento}" class="form-control" required>
+                                </div>
+                                <div class="col-md-8">
+                                    <label class="form-label fw-semibold">Observação</label>
+                                    <input type="text" th:field="*{observacao}" class="form-control">
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-end gap-2 pt-3 border-top">
+                                <a href="/financeiro/obrigacoes-repasse" class="btn btn-outline-secondary">Cancelar</a>
+                                <button type="submit" class="btn btn-eclesial"><i class="bi bi-check-lg me-1"></i> Gerar Obrigação</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

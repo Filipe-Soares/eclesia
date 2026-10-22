@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: assets('Visão Geral Financeira - ADM Eclesial')}">
+</head>
+<body>
+    <header th:replace="~{fragments/layout :: header}"></header>
+    <div class="app-shell">
+        <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+        <main class="app-main">
+            <div class="page">
+                <div th:replace="~{fragments/layout :: feedback}"></div>
+
+                <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                    <div>
+                        <h1 class="h3 mb-1 text-gray-800">Gestão Financeira</h1>
+                        <p class="text-muted mb-0">Visão consolidada das contas, receitas, despesas, repasses e orçamentos</p>
+                    </div>
+                </div>
+
+                <div class="d-flex flex-wrap gap-2 mb-4">
+                    <a href="/financeiro/contas" class="btn btn-outline-primary btn-sm"><i class="bi bi-bank me-1"></i> Contas</a>
+                    <a href="/financeiro/categorias" class="btn btn-outline-primary btn-sm"><i class="bi bi-tags me-1"></i> Categorias</a>
+                    <a href="/financeiro/centros-custo" class="btn btn-outline-primary btn-sm"><i class="bi bi-diagram-2 me-1"></i> Centros de custo</a>
+                    <a href="/financeiro/fornecedores" class="btn btn-outline-primary btn-sm"><i class="bi bi-truck me-1"></i> Fornecedores</a>
+                    <a href="/financeiro/dizimistas" class="btn btn-outline-primary btn-sm"><i class="bi bi-people me-1"></i> Dizimistas</a>
+                    <a href="/financeiro/movimentacoes" class="btn btn-outline-primary btn-sm"><i class="bi bi-arrow-left-right me-1"></i> Movimentações</a>
+                    <a href="/financeiro/transferencias" class="btn btn-outline-primary btn-sm"><i class="bi bi-arrow-left-right me-1"></i> Transferências</a>
+                    <a href="/financeiro/contas-a-pagar" class="btn btn-outline-primary btn-sm"><i class="bi bi-calendar-x me-1"></i> Contas a pagar</a>
+                    <a href="/financeiro/pagamentos" class="btn btn-outline-primary btn-sm"><i class="bi bi-credit-card me-1"></i> Pagamentos</a>
+                    <a href="/financeiro/regras-repasse" class="btn btn-outline-primary btn-sm"><i class="bi bi-send me-1"></i> Regras de repasse</a>
+                    <a href="/financeiro/obrigacoes-repasse" class="btn btn-outline-primary btn-sm"><i class="bi bi-send-check me-1"></i> Repasses gerados</a>
+                    <a href="/financeiro/orcamentos" class="btn btn-outline-primary btn-sm"><i class="bi bi-pie-chart me-1"></i> Orçamentos</a>
+                </div>
+
+                <div class="row g-4 mb-4">
+                    <!-- Contas Financeiras -->
+                    <div class="col-lg-6">
+                        <div class="card shadow-sm border-0 h-100">
+                            <div class="card-header bg-light fw-semibold d-flex align-items-center justify-content-between">
+                                <span><i class="bi bi-bank me-2 text-primary"></i> Contas Financeiras</span>
+                                <span class="badge bg-light text-dark border" th:text="${#lists.size(contas)} + ' conta(s)'"></span>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-hover align-middle mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Nome da Conta</th>
+                                                <th>Tipo</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr th:if="${#lists.isEmpty(contas)}">
+                                                <td colspan="2" class="text-center text-muted py-3">Nenhuma conta cadastrada.</td>
+                                            </tr>
+                                            <tr th:each="x:${contas}">
+                                                <td class="fw-semibold text-dark" th:text="${x.nome}"></td>
+                                                <td>
+                                                    <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle" th:text="${x.tipo}"></span>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Movimentações Recentes -->
+                    <div class="col-lg-6">
+                        <div class="card shadow-sm border-0 h-100">
+                            <div class="card-header bg-light fw-semibold d-flex align-items-center justify-content-between">
+                                <span><i class="bi bi-arrow-left-right me-2 text-primary"></i> Movimentações</span>
+                                <span class="badge bg-light text-dark border" th:text="${#lists.size(movimentacoes)} + ' registro(s)'"></span>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-hover align-middle mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Data</th>
+                                                <th>Tipo</th>
+                                                <th class="text-end pe-3">Valor</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr th:if="${#lists.isEmpty(movimentacoes)}">
+                                                <td colspan="3" class="text-center text-muted py-3">Nenhuma movimentação registrada.</td>
+                                            </tr>
+                                            <tr th:each="x:${movimentacoes}">
+                                                <td th:text="${x.dataMovimentacao}"></td>
+                                                <td>
+                                                    <span class="badge bg-info-subtle text-info border border-info-subtle" th:text="${x.tipo}"></span>
+                                                </td>
+                                                <td class="text-end pe-3 fw-bold" th:text="${x.valor}"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contribuições / Dízimo / Ofertas -->
+                    <div class="col-lg-6">
+                        <div class="card shadow-sm border-0 h-100">
+                            <div class="card-header bg-light fw-semibold d-flex align-items-center justify-content-between">
+                                <span><i class="bi bi-heart me-2 text-primary"></i> Contribuições & Dízimo</span>
+                                <span class="badge bg-light text-dark border" th:text="${#lists.size(contribuicoes)} + ' registro(s)'"></span>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-hover align-middle mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Data</th>
+                                                <th>Tipo</th>
+                                                <th class="text-end pe-3">Valor</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr th:if="${#lists.isEmpty(contribuicoes)}">
+                                                <td colspan="3" class="text-center text-muted py-3">Nenhuma contribuição registrada.</td>
+                                            </tr>
+                                            <tr th:each="x:${contribuicoes}">
+                                                <td th:text="${x.dataContribuicao}"></td>
+                                                <td>
+                                                    <span class="badge bg-success-subtle text-success border border-success-subtle" th:text="${x.tipo}"></span>
+                                                </td>
+                                                <td class="text-end pe-3 fw-bold text-success" th:text="${x.valor}"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Repasses Cúria -->
+                    <div class="col-lg-6">
+                        <div class="card shadow-sm border-0 h-100">
+                            <div class="card-header bg-light fw-semibold d-flex align-items-center justify-content-between">
+                                <span><i class="bi bi-send me-2 text-primary"></i> Repasses à Cúria</span>
+                                <span class="badge bg-light text-dark border" th:text="${#lists.size(obrigacoes)} + ' obrigação(ões)'"></span>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-hover align-middle mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Competência</th>
+                                                <th>Status</th>
+                                                <th class="text-end pe-3">Valor Repasse</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr th:if="${#lists.isEmpty(obrigacoes)}">
+                                                <td colspan="3" class="text-center text-muted py-3">Nenhum repasse registrado.</td>
+                                            </tr>
+                                            <tr th:each="x:${obrigacoes}">
+                                                <td class="fw-semibold text-dark" th:text="${x.competencia}"></td>
+                                                <td>
+                                                    <span class="badge bg-warning-subtle text-warning border border-warning-subtle" th:text="${x.status}"></span>
+                                                </td>
+                                                <td class="text-end pe-3 fw-bold" th:text="${x.valorRepasse}"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contas a Pagar -->
+                    <div class="col-lg-6">
+                        <div class="card shadow-sm border-0 h-100">
+                            <div class="card-header bg-light fw-semibold d-flex align-items-center justify-content-between">
+                                <span><i class="bi bi-calendar-check me-2 text-primary"></i> Contas a Pagar</span>
+                                <span class="badge bg-light text-dark border" th:text="${#lists.size(contasAPagar)} + ' conta(s)'"></span>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-hover align-middle mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Descrição</th>
+                                                <th>Vencimento</th>
+                                                <th class="text-end pe-3">Valor Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr th:if="${#lists.isEmpty(contasAPagar)}">
+                                                <td colspan="3" class="text-center text-muted py-3">Nenhuma conta a pagar registrada.</td>
+                                            </tr>
+                                            <tr th:each="x:${contasAPagar}">
+                                                <td class="fw-semibold text-dark" th:text="${x.descricao}"></td>
+                                                <td th:text="${x.dataVencimento}"></td>
+                                                <td class="text-end pe-3 fw-bold text-danger" th:text="${x.valorTotal}"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pagamentos Realizados -->
+                    <div class="col-lg-6">
+                        <div class="card shadow-sm border-0 h-100">
+                            <div class="card-header bg-light fw-semibold d-flex align-items-center justify-content-between">
+                                <span><i class="bi bi-credit-card me-2 text-primary"></i> Pagamentos Realizados</span>
+                                <span class="badge bg-light text-dark border" th:text="${#lists.size(pagamentos)} + ' pagamento(s)'"></span>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-hover align-middle mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Data</th>
+                                                <th>Meio Pagamento</th>
+                                                <th class="text-end pe-3">Valor</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr th:if="${#lists.isEmpty(pagamentos)}">
+                                                <td colspan="3" class="text-center text-muted py-3">Nenhum pagamento registrado.</td>
+                                            </tr>
+                                            <tr th:each="x:${pagamentos}">
+                                                <td th:text="${x.dataPagamento}"></td>
+                                                <td class="text-muted" th:text="${x.meioPagamento}"></td>
+                                                <td class="text-end pe-3 fw-bold" th:text="${x.valor}"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Orçamentos Anuais -->
+                    <div class="col-12">
+                        <div class="card shadow-sm border-0">
+                            <div class="card-header bg-light fw-semibold d-flex align-items-center justify-content-between">
+                                <span><i class="bi bi-pie-chart me-2 text-primary"></i> Orçamentos</span>
+                                <span class="badge bg-light text-dark border" th:text="${#lists.size(orcamentos)} + ' orçamento(s)'"></span>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-hover align-middle mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th style="width: 120px;">Ano</th>
+                                                <th>Nome do Orçamento</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr th:if="${#lists.isEmpty(orcamentos)}">
+                                                <td colspan="3" class="text-center text-muted py-3">Nenhum orçamento cadastrado.</td>
+                                            </tr>
+                                            <tr th:each="x:${orcamentos}">
+                                                <td class="fw-bold" th:text="${x.ano}"></td>
+                                                <td class="fw-semibold text-dark" th:text="${x.nome}"></td>
+                                                <td>
+                                                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle" th:text="${x.status}"></span>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

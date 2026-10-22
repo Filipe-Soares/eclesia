@@ -1,0 +1,1 @@
+package br.com.admeclesial.application.organizacao; import java.util.UUID; public class FuncaoEclesialNotFoundException extends RuntimeException{public FuncaoEclesialNotFoundException(UUID uuid){super("Função eclesial não encontrada: "+uuid);}}

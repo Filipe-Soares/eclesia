@@ -1,0 +1,1 @@
+package br.com.admeclesial.domain.pessoa; public enum TipoMembroFamilia { RESPONSAVEL, CONJUGE, FILHO, OUTRO }

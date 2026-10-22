@@ -1,0 +1,24 @@
+package br.com.admeclesial.application.financeiro;
+import org.springframework.beans.factory.annotation.Autowired;
+import br.com.admeclesial.application.usuario.SegurancaOrganizacaoService;
+import br.com.admeclesial.domain.financeiro.*;
+import br.com.admeclesial.infrastructure.persistence.financeiro.*;
+import br.com.admeclesial.infrastructure.persistence.organizacao.OrganizacaoEclesialRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import java.time.LocalDate;
+import java.util.*;
+@Service
+public class OrcamentoApplicationService {
+    @Autowired SegurancaOrganizacaoService seguranca;
+ final OrcamentoRepository repo; final ItemOrcamentoRepository itens; final OrganizacaoEclesialRepository org; final CategoriaFinanceiraRepository categorias; final CentroCustoRepository centros;
+ public OrcamentoApplicationService(OrcamentoRepository r,ItemOrcamentoRepository i,OrganizacaoEclesialRepository o,CategoriaFinanceiraRepository c,CentroCustoRepository cc){repo=r;itens=i;org=o;categorias=c;centros=cc;}
+ @Transactional public Orcamento criar(OrcamentoRequest r){if(seguranca!=null)seguranca.validarAcesso(r.organizacaoEclesialUuid());var o=org.findByUuid(r.organizacaoEclesialUuid()).orElseThrow(()->new IllegalArgumentException("Organização não encontrada."));if(!o.isAtivo())throw new IllegalArgumentException("Organização inativa.");if(repo.findByOrganizacaoEclesialIdAndAno(o.getId(),r.ano()).isPresent())throw new IllegalArgumentException("Já existe orçamento para a organização no ano informado.");var e=new Orcamento();e.setOrganizacaoEclesialId(o.getId());e.setAno(r.ano());e.setNome(r.nome().trim());e.setStatus(StatusOrcamento.PLANEJADO);e.setObservacao(r.observacao());return repo.save(e);}
+ @Transactional public ItemOrcamento adicionarItem(UUID orcamentoUuid,ItemOrcamentoRequest r){var o=repo.findByUuid(orcamentoUuid).orElseThrow(()->new IllegalArgumentException("Orçamento não encontrado."));if(seguranca!=null)seguranca.validarAcessoId(o.getOrganizacaoEclesialId());if(o.getStatus()!=StatusOrcamento.PLANEJADO)throw new IllegalArgumentException("Somente orçamento planejado pode receber itens.");var c=categorias.findByUuid(r.categoriaFinanceiraUuid()).orElseThrow(()->new IllegalArgumentException("Categoria financeira não encontrada."));if(!c.getAtivo())throw new IllegalArgumentException("Categoria financeira inativa.");Long centroId=null;if(r.centroCustoUuid()!=null){var cc=centros.findByUuid(r.centroCustoUuid()).orElseThrow(()->new IllegalArgumentException("Centro de custo não encontrado."));if(!cc.getAtivo())throw new IllegalArgumentException("Centro de custo inativo.");if(!cc.getOrganizacaoEclesialId().equals(o.getOrganizacaoEclesialId()))throw new IllegalArgumentException("O centro de custo deve pertencer à organização do orçamento.");centroId=cc.getId();}var e=new ItemOrcamento();e.setOrcamentoId(o.getId());e.setCategoriaFinanceiraId(c.getId());e.setCentroCustoId(centroId);e.setDescricao(r.descricao().trim());e.setValorPlanejado(r.valorPlanejado());return itens.save(e);}
+ @Transactional public Orcamento aprovar(UUID uuid){var e=buscar(uuid);if(e.getStatus()!=StatusOrcamento.PLANEJADO)throw new IllegalArgumentException("Somente orçamento planejado pode ser aprovado.");if(itens.findAllByOrcamentoIdOrderByIdAsc(e.getId()).isEmpty())throw new IllegalArgumentException("O orçamento deve possuir ao menos um item.");e.setStatus(StatusOrcamento.APROVADO);e.setDataAprovacao(LocalDate.now());return repo.save(e);}
+ @Transactional public Orcamento encerrar(UUID uuid){var e=buscar(uuid);if(e.getStatus()!=StatusOrcamento.APROVADO)throw new IllegalArgumentException("Somente orçamento aprovado pode ser encerrado.");e.setStatus(StatusOrcamento.ENCERRADO);return repo.save(e);}
+ @Transactional public Orcamento cancelar(UUID uuid){var e=buscar(uuid);if(e.getStatus()==StatusOrcamento.ENCERRADO)throw new IllegalArgumentException("Orçamento encerrado não pode ser cancelado.");if(e.getStatus()==StatusOrcamento.CANCELADO)throw new IllegalArgumentException("Orçamento já está cancelado.");e.setStatus(StatusOrcamento.CANCELADO);return repo.save(e);}
+ @Transactional(readOnly=true) public Orcamento buscar(UUID uuid){var e=repo.findByUuid(uuid).orElseThrow(()->new IllegalArgumentException("Orçamento não encontrado."));if(seguranca!=null)seguranca.validarAcessoId(e.getOrganizacaoEclesialId());return e;}
+ @Transactional(readOnly=true) public List<Orcamento> listar(){return repo.findAllByOrderByAnoDesc().stream().filter(e -> { try { if(seguranca!=null)seguranca.validarAcessoId(e.getOrganizacaoEclesialId()); return true; } catch (org.springframework.security.access.AccessDeniedException ex) { return false; }}).toList();}
+ @Transactional(readOnly=true) public List<ItemOrcamento> listarItens(UUID uuid){return itens.findAllByOrcamentoIdOrderByIdAsc(buscar(uuid).getId());}
+}

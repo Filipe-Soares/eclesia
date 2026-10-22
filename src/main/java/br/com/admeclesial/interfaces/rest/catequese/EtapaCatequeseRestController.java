@@ -1,0 +1,4 @@
+package br.com.admeclesial.interfaces.rest.catequese;
+import br.com.admeclesial.application.catequese.*; import jakarta.validation.Valid; import org.springframework.http.HttpStatus; import org.springframework.web.bind.annotation.*; import java.util.*;
+@RestController @RequestMapping("/api/v1/etapas-catequese")
+public class EtapaCatequeseRestController { private final EtapaCatequeseApplicationService service; public EtapaCatequeseRestController(EtapaCatequeseApplicationService s){service=s;} @PostMapping @ResponseStatus(HttpStatus.CREATED) public EtapaCatequeseResponse criar(@Valid @RequestBody EtapaCatequeseRequest r){return service.criar(r);} @GetMapping("/{uuid}") public EtapaCatequeseResponse buscar(@PathVariable UUID uuid){return service.buscar(uuid);} @GetMapping public List<EtapaCatequeseResponse> listar(@RequestParam UUID catequeseUuid){return service.listar(catequeseUuid);} }

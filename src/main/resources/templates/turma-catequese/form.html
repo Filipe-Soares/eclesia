@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: assets(${edicao ? 'Editar Turma' : 'Nova Turma'} + ' - ADM Eclesial')}">
+</head>
+<body>
+    <header th:replace="~{fragments/layout :: header}"></header>
+    <div class="app-shell">
+        <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+        <main class="app-main">
+            <div class="page">
+                <div th:replace="~{fragments/layout :: feedback}"></div>
+
+                <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                    <div>
+                        <h1 class="h3 mb-1 text-gray-800" th:text="${edicao ? 'Editar Turma' : 'Nova Turma'}"></h1>
+                        <p class="text-muted mb-0">
+                            <strong>Catequese:</strong> <span th:text="${etapa.catequeseNome}"></span> | 
+                            <strong>Etapa:</strong> <span th:text="${etapa.nome}"></span>
+                        </p>
+                    </div>
+                    <a th:href="@{/catequeses/etapas/{uuid}/turmas(uuid=${etapa.uuid})}" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left me-1"></i> Voltar para Turmas
+                    </a>
+                </div>
+
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-4">
+                        <form th:object="${request}"
+                              th:action="${edicao} ? @{/catequeses/etapas/{etapaUuid}/turmas/{uuid}(etapaUuid=${etapa.uuid},uuid=${uuid})} : @{/catequeses/etapas/{etapaUuid}/turmas(etapaUuid=${etapa.uuid})}"
+                              method="post">
+      <div th:replace="~{fragments/layout :: formErrors}"></div>
+
+                            <div th:if="${#fields.hasGlobalErrors()}" class="alert alert-danger mb-4">
+                                <ul class="mb-0">
+                                    <li th:each="error : ${#fields.globalErrors()}" th:text="${error}"></li>
+                                </ul>
+                            </div>
+
+                            <input type="hidden" th:field="*{etapaCatequeseUuid}">
+                            <input type="hidden" th:field="*{organizacaoEclesialUuid}">
+
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-8">
+                                    <label class="form-label fw-semibold">Nome da Turma <span class="text-danger">*</span></label>
+                                    <input type="text" th:field="*{nome}" class="form-control" maxlength="150" required placeholder="Ex: Turma São Pedro - Sábado">
+                                    <div class="text-danger small mt-1" th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}"></div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fw-semibold">Ano</label>
+                                    <input type="number" th:field="*{ano}" class="form-control" min="2000" max="2200" placeholder="2026">
+                                    <div class="text-danger small mt-1" th:if="${#fields.hasErrors('ano')}" th:errors="*{ano}"></div>
+                                </div>
+                            </div>
+
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-4">
+                                    <label class="form-label fw-semibold">Turno</label>
+                                    <select th:field="*{turno}" class="form-select">
+                                        <option value="">Selecione</option>
+                                        <option th:each="turno : ${turnos}" th:value="${turno}" th:text="${turno}"></option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fw-semibold">Data Inicial</label>
+                                    <input type="date" th:field="*{dataInicio}" class="form-control">
+                                    <div class="text-danger small mt-1" th:if="${#fields.hasErrors('dataInicio')}" th:errors="*{dataInicio}"></div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fw-semibold">Data Final</label>
+                                    <input type="date" th:field="*{dataFim}" class="form-control">
+                                    <div class="text-danger small mt-1" th:if="${#fields.hasErrors('dataFim')}" th:errors="*{dataFim}"></div>
+                                </div>
+                            </div>
+
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-4">
+                                    <label class="form-label fw-semibold">Capacidade de Alunos</label>
+                                    <input type="number" th:field="*{capacidade}" class="form-control" min="1" placeholder="Ex: 25">
+                                    <div class="text-danger small mt-1" th:if="${#fields.hasErrors('capacidade')}" th:errors="*{capacidade}"></div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fw-semibold">Local/Sala</label>
+                                    <input type="text" th:field="*{local}" class="form-control" maxlength="255" placeholder="Ex: Salão Paroquial - Sala 2">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fw-semibold">Status</label>
+                                    <select th:field="*{status}" class="form-select">
+                                        <option th:each="status : ${statusList}" th:value="${status}" th:text="${status}"></option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label fw-semibold">Observações</label>
+                                <textarea th:field="*{observacao}" class="form-control" rows="4" maxlength="5000" placeholder="Informações complementares sobre a turma..."></textarea>
+                            </div>
+
+                            <div class="d-flex justify-content-end gap-2 pt-3 border-top">
+                                <a th:href="@{/catequeses/etapas/{uuid}/turmas(uuid=${etapa.uuid})}" class="btn btn-outline-secondary">
+                                    Cancelar
+                                </a>
+                                <button type="submit" class="btn btn-eclesial">
+                                    <i class="bi bi-check-lg me-1"></i> Salvar
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

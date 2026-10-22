@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: assets('Detalhe do Orçamento')}">
+</head>
+<body>
+    <header th:replace="~{fragments/layout :: header}"></header>
+    <div class="app-shell">
+        <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+        <main class="app-main">
+            <div class="page">
+                <div th:replace="~{fragments/layout :: feedback}"></div>
+
+                <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                    <div>
+                        <h1 class="h3 mb-1 text-gray-800" th:text="${orcamento.nome}">Orçamento</h1>
+                        <p class="text-muted mb-0">
+                            Ano <span th:text="${orcamento.ano}"></span> —
+                            <span class="badge bg-primary-subtle text-primary border border-primary-subtle" th:text="${orcamento.status}"></span>
+                        </p>
+                    </div>
+                    <a href="/financeiro/orcamentos" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i> Voltar</a>
+                </div>
+
+                <div class="d-flex flex-wrap gap-2 mb-4">
+                    <form method="post" th:action="@{'/financeiro/orcamentos/'+${orcamento.uuid}+'/aprovar'}" th:if="${orcamento.status.name() == 'PLANEJADO'}">
+                        <button type="submit" class="btn btn-success btn-sm"><i class="bi bi-check2-circle me-1"></i> Aprovar</button>
+                    </form>
+                    <form method="post" th:action="@{'/financeiro/orcamentos/'+${orcamento.uuid}+'/encerrar'}" th:if="${orcamento.status.name() == 'APROVADO'}">
+                        <button type="submit" class="btn btn-dark btn-sm"><i class="bi bi-lock me-1"></i> Encerrar</button>
+                    </form>
+                    <form method="post" th:action="@{'/financeiro/orcamentos/'+${orcamento.uuid}+'/cancelar'}"
+                          th:if="${orcamento.status.name() != 'ENCERRADO' and orcamento.status.name() != 'CANCELADO'}">
+                        <button type="submit" class="btn btn-outline-danger btn-sm"><i class="bi bi-x-circle me-1"></i> Cancelar</button>
+                    </form>
+                </div>
+
+                <th:block th:if="${#lists.isEmpty(itens)}">
+                    <section th:replace="~{fragments/layout :: empty-state('Nenhum item no orçamento.', 'Adicione itens enquanto o orçamento estiver planejado.')}"></section>
+                </th:block>
+
+                <div class="card shadow-sm border-0 mb-4" th:unless="${#lists.isEmpty(itens)}">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Descrição</th>
+                                    <th>Categoria</th>
+                                    <th class="text-end pe-3">Valor Planejado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="x:${itens}">
+                                    <td class="fw-semibold text-dark" th:text="${x.descricao}"></td>
+                                    <td th:text="${categoriasPorId.get(x.categoriaFinanceiraId)} ?: '—'"></td>
+                                    <td class="text-end pe-3 fw-bold" th:text="${x.valorPlanejado}"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card shadow-sm border-0" th:if="${orcamento.status.name() == 'PLANEJADO'}">
+                    <div class="card-header bg-light fw-semibold">Adicionar Item</div>
+                    <div class="card-body p-4">
+                        <form method="post" th:action="@{'/financeiro/orcamentos/'+${orcamento.uuid}+'/itens'}" th:object="${itemRequest}">
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-4">
+                                    <label class="form-label fw-semibold">Categoria <span class="text-danger">*</span></label>
+                                    <select th:field="*{categoriaFinanceiraUuid}" class="form-select" required>
+                                        <option value="">Selecione</option>
+                                        <option th:each="c:${categorias}" th:value="${c.uuid}" th:text="${c.nome}"></option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fw-semibold">Centro de Custo</label>
+                                    <select th:field="*{centroCustoUuid}" class="form-select">
+                                        <option value="">Nenhum</option>
+                                        <option th:each="c:${centros}" th:value="${c.uuid}" th:text="${c.nome}"></option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fw-semibold">Valor Planejado (R$) <span class="text-danger">*</span></label>
+                                    <input type="number" step="0.01" min="0.01" th:field="*{valorPlanejado}" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Descrição <span class="text-danger">*</span></label>
+                                <input type="text" th:field="*{descricao}" class="form-control" required>
+                            </div>
+                            <div class="d-flex justify-content-end">
+                                <button type="submit" class="btn btn-eclesial"><i class="bi bi-plus-lg me-1"></i> Adicionar Item</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

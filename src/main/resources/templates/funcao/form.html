@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: assets(${funcaoUuid != null ? 'Editar Função Eclesial' : 'Nova Função Eclesial'})}">
+  <meta charset="UTF-8">
+  <title th:text="${funcaoUuid != null ? 'Editar Função Eclesial - ADM Eclesial' : 'Nova função eclesial - ADM Eclesial'}">Função Eclesial - ADM Eclesial</title>
+</head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+
+<div class="app-shell">
+  <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+  
+  <main class="app-main">
+    <div class="page">
+      
+      <!-- Cabeçalho -->
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-4 pb-2 border-bottom">
+        <div>
+          <h1 class="h3 fw-bold text-dark mb-1">
+            <i class="bi bi-briefcase text-primary me-2"></i>
+            <span th:text="${funcaoUuid != null ? 'Editar Função Eclesial' : 'Nova Função Eclesial'}">Nova Função Eclesial</span>
+          </h1>
+          <p class="text-muted small mb-0" th:text="${funcaoUuid != null ? 'Atualize os dados e responsabilidades da função eclesial' : 'Cadastre uma responsabilidade eclesial disponível para atribuição'}">Cadastre uma responsabilidade eclesial disponível para atribuição</p>
+        </div>
+        <div>
+          <a class="btn btn-outline-secondary d-flex align-items-center gap-1" th:href="@{/funcoes-eclesiais}">
+            <i class="bi bi-arrow-left"></i>
+            <span>Voltar para Lista</span>
+          </a>
+        </div>
+      </div>
+
+      <div th:replace="~{fragments/layout :: feedback}"></div>
+
+      <!-- Formulário em Card -->
+      <div class="card border-0 shadow-sm p-4 p-md-5 mb-4" style="max-width: 860px;">
+        <form th:action="${funcaoUuid != null ? '/funcoes-eclesiais/' + funcaoUuid + '/editar' : '/funcoes-eclesiais'}" th:object="${request}" method="post">
+      <div th:replace="~{fragments/layout :: formErrors}"></div>
+          
+          <div class="row g-3">
+            
+            <div class="col-12 col-md-4">
+              <label class="form-label small fw-semibold text-muted" for="codigo">Código <span class="text-danger">*</span></label>
+              <input id="codigo" type="text" class="form-control font-monospace text-uppercase" th:field="*{codigo}" th:classappend="${#fields.hasErrors('codigo')} ? 'is-invalid'" autofocus placeholder="Ex: PAROCO">
+              <div class="invalid-feedback" th:errors="*{codigo}"></div>
+            </div>
+
+            <div class="col-12 col-md-8">
+              <label class="form-label small fw-semibold text-muted" for="nome">Nome da Função <span class="text-danger">*</span></label>
+              <input id="nome" type="text" class="form-control" th:field="*{nome}" th:classappend="${#fields.hasErrors('nome')} ? 'is-invalid'" placeholder="Ex: Pároco">
+              <div class="invalid-feedback" th:errors="*{nome}"></div>
+            </div>
+
+            <div class="col-12">
+              <label class="form-label small fw-semibold text-muted" for="descricao">Descrição / Atribuições</label>
+              <textarea id="descricao" rows="3" class="form-control" th:field="*{descricao}" placeholder="Descrição das responsabilidades desta função"></textarea>
+            </div>
+
+            <div class="col-12 mt-3">
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="exclusivoNaOrganizacao" th:field="*{exclusivoNaOrganizacao}">
+                <label class="form-check-label small fw-semibold text-dark" for="exclusivoNaOrganizacao">Exclusivo na Organização</label>
+              </div>
+              <span class="form-text fs-8 text-muted d-block ms-4 ps-2">Quando marcado, somente uma pessoa poderá exercer esta função na organização no mesmo período.</span>
+            </div>
+
+          </div>
+
+          <div class="d-flex gap-2 align-items-center mt-4 pt-3 border-top">
+            <button type="submit" class="btn btn-eclesial px-4 shadow-sm">
+              <i class="bi bi-check-lg me-1"></i> <span th:text="${funcaoUuid != null ? 'Atualizar Função' : 'Salvar Função'}">Salvar Função</span>
+            </button>
+            <a class="btn btn-outline-secondary px-3" th:href="@{/funcoes-eclesiais}">Cancelar</a>
+          </div>
+
+        </form>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+</body>
+</html>

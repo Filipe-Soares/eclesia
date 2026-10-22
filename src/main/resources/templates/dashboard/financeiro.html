@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: assets('Dashboard Financeiro')}">
+  <meta charset="UTF-8">
+  <title>Dashboard - ADM Eclesial</title>
+</head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+
+<div class="app-shell">
+  <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+  
+  <main class="app-main">
+    <div class="page">
+      
+      <!-- Cabeçalho -->
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-4 pb-2 border-bottom">
+        <div>
+          <h1 class="h3 fw-bold text-dark mb-1">
+            <i class="bi bi-cash-coin text-primary me-2"></i>Dashboard Financeiro
+          </h1>
+          <p class="text-muted small mb-0">Controle de receitas, despesas, dízimos, contas a pagar e projetos</p>
+        </div>
+      </div>
+
+      <div th:replace="~{fragments/layout :: feedback}"></div>
+
+      <!-- Filtro -->
+      <div class="card filter-card p-3 mb-4">
+        <form method="get" action="/dashboard" class="row g-3 align-items-end">
+          <div class="col-12 col-md-5">
+            <label class="form-label small fw-semibold text-muted mb-1">Organização</label>
+            <select class="form-select" name="organizacaoUuid">
+              <option th:each="o:${organizacoes}" th:value="${o.uuid}" th:text="${o.nome}" th:selected="${o.uuid == organizacaoUuid}"></option>
+            </select>
+          </div>
+          <div class="col-6 col-md-2">
+            <label class="form-label small fw-semibold text-muted mb-1">Início</label>
+            <input type="date" class="form-control" name="inicio" th:value="${inicio}">
+          </div>
+          <div class="col-6 col-md-2">
+            <label class="form-label small fw-semibold text-muted mb-1">Fim</label>
+            <input type="date" class="form-control" name="fim" th:value="${fim}">
+          </div>
+          <div class="col-12 col-md-3 d-flex flex-column">
+            <span class="text-muted fs-8 mb-1">Padrão: mês atual</span>
+            <button type="submit" class="btn btn-eclesial d-flex align-items-center justify-content-center gap-1">
+              <i class="bi bi-funnel"></i>
+              <span>Aplicar Filtro</span>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <div th:if="${dashboard == null}" class="alert alert-warning shadow-sm border-0 d-flex align-items-center gap-2">
+        <i class="bi bi-exclamation-triangle-fill fs-5"></i>
+        <span>Nenhuma organização autorizada disponível.</span>
+      </div>
+
+      <section th:if="${dashboard != null}">
+        
+        <!-- Movimentação do Período -->
+        <div class="section-heading">
+          <i class="bi bi-graph-up-arrow"></i>
+          <span>Movimentação do Período</span>
+        </div>
+        <div class="row g-3 mb-4">
+          <div class="col-12 col-sm-6 col-lg-3">
+            <div class="card metric-card p-3 h-100 border-start border-success border-4">
+              <div class="d-flex justify-content-between align-items-start">
+                <div>
+                  <span class="text-muted small fw-medium">Entradas</span>
+                  <div class="metric-value text-success" th:text="${#numbers.formatCurrency(dashboard.entradas)}">R$ 0</div>
+                </div>
+                <div class="metric-icon-box bg-success-subtle text-success">
+                  <i class="bi bi-arrow-down-left"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-sm-6 col-lg-3">
+            <div class="card metric-card p-3 h-100 border-start border-danger border-4">
+              <div class="d-flex justify-content-between align-items-start">
+                <div>
+                  <span class="text-muted small fw-medium">Saídas</span>
+                  <div class="metric-value text-danger" th:text="${#numbers.formatCurrency(dashboard.saidas)}">R$ 0</div>
+                </div>
+                <div class="metric-icon-box bg-danger-subtle text-danger">
+                  <i class="bi bi-arrow-up-right"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-sm-6 col-lg-3">
+            <div class="card metric-card p-3 h-100 border-start border-primary border-4">
+              <div class="d-flex justify-content-between align-items-start">
+                <div>
+                  <span class="text-muted small fw-medium">Resultado</span>
+                  <div class="metric-value text-primary" th:text="${#numbers.formatCurrency(dashboard.resultado)}">R$ 0</div>
+                </div>
+                <div class="metric-icon-box bg-primary-subtle text-primary">
+                  <i class="bi bi-wallet2"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-sm-6 col-lg-3">
+            <div class="card metric-card p-3 h-100 border-start border-info border-4">
+              <div class="d-flex justify-content-between align-items-start">
+                <div>
+                  <span class="text-muted small fw-medium">Contribuições</span>
+                  <div class="metric-value text-dark" th:text="${dashboard.contribuicoes}">0</div>
+                  <small class="text-muted" th:text="${#numbers.formatCurrency(dashboard.valorContribuicoes)}"></small>
+                </div>
+                <div class="metric-icon-box bg-info-subtle text-info">
+                  <i class="bi bi-receipt"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Compromissos e Contas -->
+        <div class="section-heading">
+          <i class="bi bi-calendar-event"></i>
+          <span>Compromissos & Vencimentos</span>
+        </div>
+        <div class="row g-3 mb-4">
+          <div class="col-12 col-sm-6">
+            <div class="card metric-card p-3 h-100" th:classappend="${dashboard.contasVencidas > 0} ? 'border-start border-danger border-4'">
+              <div class="d-flex justify-content-between align-items-start">
+                <div>
+                  <span class="text-muted small fw-medium">Contas Vencidas</span>
+                  <div class="metric-value" th:classappend="${dashboard.contasVencidas > 0} ? 'text-danger' : 'text-dark'" th:text="${dashboard.contasVencidas}">0</div>
+                  <small class="text-muted" th:text="${#numbers.formatCurrency(dashboard.saldoContasVencidas)}"></small>
+                </div>
+                <div class="metric-icon-box bg-danger-subtle text-danger">
+                  <i class="bi bi-calendar-x"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-sm-6">
+            <div class="card metric-card p-3 h-100" th:classappend="${dashboard.repassesVencidos > 0} ? 'border-start border-warning border-4'">
+              <div class="d-flex justify-content-between align-items-start">
+                <div>
+                  <span class="text-muted small fw-medium">Repasses Vencidos</span>
+                  <div class="metric-value" th:classappend="${dashboard.repassesVencidos > 0} ? 'text-warning' : 'text-dark'" th:text="${dashboard.repassesVencidos}">0</div>
+                  <small class="text-muted" th:text="${#numbers.formatCurrency(dashboard.saldoRepassesVencidos)}"></small>
+                </div>
+                <div class="metric-icon-box bg-warning-subtle text-warning">
+                  <i class="bi bi-send-x"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Projetos e Obras -->
+        <div class="section-heading">
+          <i class="bi bi-building-gear"></i>
+          <span>Projetos & Obras</span>
+        </div>
+        <div class="row g-3 mb-4">
+          <div class="col-12 col-sm-6 col-lg-3">
+            <div class="card metric-card p-3 h-100">
+              <div class="d-flex justify-content-between align-items-start">
+                <div>
+                  <span class="text-muted small fw-medium">Em Execução</span>
+                  <div class="metric-value text-dark" th:text="${dashboard.projetosExecucao}">0</div>
+                </div>
+                <div class="metric-icon-box bg-secondary-subtle text-secondary">
+                  <i class="bi bi-kanban"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-sm-6 col-lg-3">
+            <div class="card metric-card p-3 h-100">
+              <div class="d-flex justify-content-between align-items-start">
+                <div>
+                  <span class="text-muted small fw-medium">Recursos Vinculados</span>
+                  <div class="metric-value text-dark" th:text="${#numbers.formatCurrency(dashboard.recursosVinculados)}">R$ 0</div>
+                </div>
+                <div class="metric-icon-box bg-primary-subtle text-primary">
+                  <i class="bi bi-lock-fill"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-sm-6 col-lg-3">
+            <div class="card metric-card p-3 h-100">
+              <div class="d-flex justify-content-between align-items-start">
+                <div>
+                  <span class="text-muted small fw-medium">Recursos Utilizados</span>
+                  <div class="metric-value text-dark" th:text="${#numbers.formatCurrency(dashboard.recursosUtilizados)}">R$ 0</div>
+                </div>
+                <div class="metric-icon-box bg-info-subtle text-info">
+                  <i class="bi bi-pie-chart-fill"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-sm-6 col-lg-3">
+            <div class="card metric-card p-3 h-100 border-start border-success border-4">
+              <div class="d-flex justify-content-between align-items-start">
+                <div>
+                  <span class="text-muted small fw-medium">Saldo Disponível</span>
+                  <div class="metric-value text-success" th:text="${#numbers.formatCurrency(dashboard.saldoRecursos)}">R$ 0</div>
+                </div>
+                <div class="metric-icon-box bg-success-subtle text-success">
+                  <i class="bi bi-piggy-bank-fill"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Seção Atenção -->
+        <div class="section-heading">
+          <i class="bi bi-exclamation-octagon-fill text-warning"></i>
+          <span>Atenção & Pendências</span>
+        </div>
+        <div class="d-flex flex-column gap-2 mb-4">
+          <div class="alert alert-warning shadow-sm border-0 d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2 m-0 p-3" th:if="${dashboard.contasVencidas > 0}">
+            <div class="d-flex align-items-center gap-2">
+              <i class="bi bi-calendar-x-fill text-danger fs-5"></i>
+              <div>
+                <b class="text-danger" th:text="|${dashboard.contasVencidas} conta(s) vencida(s)|"></b>
+                <span class="text-muted"> — saldo total: </span>
+                <span class="fw-bold" th:text="${#numbers.formatCurrency(dashboard.saldoContasVencidas)}"></span>
+              </div>
+            </div>
+            <a class="btn btn-sm btn-outline-dark" href="/relatorios/contas-a-pagar?somenteVencidas=true">
+              <i class="bi bi-arrow-right-short"></i> Ver relatório
+            </a>
+          </div>
+
+          <div class="alert alert-warning shadow-sm border-0 d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2 m-0 p-3" th:if="${dashboard.repassesVencidos > 0}">
+            <div class="d-flex align-items-center gap-2">
+              <i class="bi bi-send-x-fill text-danger fs-5"></i>
+              <div>
+                <b class="text-danger" th:text="|${dashboard.repassesVencidos} repasse(s) vencido(s)|"></b>
+                <span class="text-muted"> — saldo total: </span>
+                <span class="fw-bold" th:text="${#numbers.formatCurrency(dashboard.saldoRepassesVencidos)}"></span>
+              </div>
+            </div>
+            <a class="btn btn-sm btn-outline-dark" href="/relatorios/repasses-curia?somenteVencidos=true">
+              <i class="bi bi-arrow-right-short"></i> Ver relatório
+            </a>
+          </div>
+
+          <div class="alert alert-info shadow-sm border-0 d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2 m-0 p-3" th:if="${dashboard.projetosRecursoSemUso > 0}">
+            <div class="d-flex align-items-center gap-2">
+              <i class="bi bi-info-circle-fill fs-5 text-info"></i>
+              <div>
+                <b th:text="|${dashboard.projetosRecursoSemUso} projeto(s) com recurso disponível sem utilização|"></b>
+              </div>
+            </div>
+            <a class="btn btn-sm btn-outline-dark" href="/relatorios/projetos-obras?somenteRecursoSemUtilizacao=true">
+              <i class="bi bi-arrow-right-short"></i> Ver relatório
+            </a>
+          </div>
+
+          <div class="card p-3 text-muted text-center small bg-white border-0 shadow-sm"
+               th:if="${dashboard.contasVencidas == 0 and dashboard.repassesVencidos == 0 and dashboard.projetosRecursoSemUso == 0}">
+            <i class="bi bi-check-circle text-success fs-4 d-block mb-1"></i>
+            Nenhuma pendência financeira ou de compromissos no momento.
+          </div>
+        </div>
+
+        <!-- Relatórios Financeiros -->
+        <div class="section-heading">
+          <i class="bi bi-file-earmark-bar-graph"></i>
+          <span>Relatórios Financeiros</span>
+        </div>
+        <div class="d-flex gap-2 flex-wrap mb-4">
+          <a class="btn btn-sm btn-light border shadow-sm d-flex align-items-center gap-1" href="/relatorios/contribuicoes"><i class="bi bi-receipt"></i> Dízimos / Contribuições</a>
+          <a class="btn btn-sm btn-light border shadow-sm d-flex align-items-center gap-1" href="/relatorios/movimentacoes-financeiras"><i class="bi bi-graph-up-arrow"></i> Movimentações</a>
+          <a class="btn btn-sm btn-light border shadow-sm d-flex align-items-center gap-1" href="/relatorios/contas-a-pagar"><i class="bi bi-calendar-x"></i> Contas a pagar</a>
+          <a class="btn btn-sm btn-light border shadow-sm d-flex align-items-center gap-1" href="/relatorios/repasses-curia"><i class="bi bi-send-check"></i> Repasses</a>
+          <a class="btn btn-sm btn-light border shadow-sm d-flex align-items-center gap-1" href="/relatorios/projetos-obras"><i class="bi bi-building-gear"></i> Projetos / Obras</a>
+        </div>
+
+      </section>
+
+    </div>
+  </main>
+</div>
+
+</body>
+</html>

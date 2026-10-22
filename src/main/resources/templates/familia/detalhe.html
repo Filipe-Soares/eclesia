@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: assets(${familia.nome})}">
+  <meta charset="UTF-8">
+  <title th:text="${familia.nome} + ' - ADM Eclesial'">Família</title>
+</head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+
+<div class="app-shell">
+  <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+
+  <main class="app-main">
+    <div class="page">
+
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-4 pb-2 border-bottom">
+        <div>
+          <div class="d-flex align-items-center gap-2 mb-1">
+            <h1 class="h3 fw-bold text-dark mb-0" th:text="${familia.nome}">Família</h1>
+            <span class="badge" th:classappend="${familia.ativo} ? 'bg-success-subtle text-success border border-success-subtle' : 'bg-danger-subtle text-danger border border-danger-subtle'" th:text="${familia.ativo ? 'Ativa' : 'Inativa'}"></span>
+          </div>
+          <p class="text-muted small mb-0">Ficha da família e seus membros</p>
+        </div>
+        <div class="d-flex gap-2">
+          <a class="btn btn-outline-secondary d-flex align-items-center gap-1" th:href="@{/familias}">
+            <i class="bi bi-arrow-left"></i>
+            <span>Voltar para Lista</span>
+          </a>
+          <a class="btn btn-outline-primary d-flex align-items-center gap-1" th:href="@{/familias/{uuid}/editar(uuid=${familia.uuid})}">
+            <i class="bi bi-pencil"></i>
+            <span>Editar</span>
+          </a>
+        </div>
+      </div>
+
+      <div th:replace="~{fragments/layout :: feedback}"></div>
+
+      <div class="card border-0 shadow-sm p-4 mb-4" style="max-width: 900px;">
+        <div class="row g-3">
+          <div class="col-12 col-sm-6">
+            <label class="form-label text-muted small fw-semibold mb-1">Identificador (UUID)</label>
+            <div class="font-monospace text-dark bg-light p-2 rounded border border-light-subtle small" th:text="${familia.uuid}"></div>
+          </div>
+          <div class="col-12 col-sm-6">
+            <label class="form-label text-muted small fw-semibold mb-1">Situação</label>
+            <div>
+              <span class="badge" th:classappend="${familia.ativo} ? 'bg-success text-white' : 'bg-danger text-white'" th:text="${familia.ativo ? 'Ativa' : 'Inativa'}"></span>
+            </div>
+          </div>
+        </div>
+        <form th:if="${familia.ativo}" th:action="@{/familias/{uuid}/inativar(uuid=${familia.uuid})}" method="post" class="mt-3 pt-3 border-top"
+              sec:authorize="hasAnyRole('ADMINISTRADOR','SECRETARIA')">
+          <button type="submit" class="btn btn-outline-danger btn-sm">
+            <i class="bi bi-slash-circle me-1"></i>Inativar família
+          </button>
+        </form>
+      </div>
+
+      <!-- Membros -->
+      <div class="card border-0 shadow-sm p-4 mb-4" style="max-width: 900px;">
+        <h2 class="h5 fw-bold text-dark mb-3"><i class="bi bi-people me-2 text-primary"></i>Membros</h2>
+
+        <div th:if="${#lists.isEmpty(membros)}" class="text-muted small mb-3">Nenhum membro associado.</div>
+
+        <div class="table-responsive mb-3" th:unless="${#lists.isEmpty(membros)}">
+          <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>Pessoa</th>
+                <th>Tipo</th>
+                <th>Início</th>
+                <th>Fim</th>
+                <th class="text-end">Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="m : ${membros}">
+                <td class="fw-medium text-dark" th:text="${m.pessoaNome}"></td>
+                <td><span class="badge bg-light text-dark border" th:text="${m.tipo}"></span></td>
+                <td th:text="${m.dataInicio}"></td>
+                <td th:text="${m.dataFim != null ? m.dataFim : '—'}"></td>
+                <td class="text-end">
+                  <form th:if="${m.dataFim == null}" th:action="@{/familias/{uuid}/membros/{membroUuid}/encerrar(uuid=${familia.uuid},membroUuid=${m.membroUuid})}" method="post"
+                        class="d-inline-flex align-items-center gap-1" sec:authorize="hasAnyRole('ADMINISTRADOR','SECRETARIA')">
+                    <input type="date" name="dataFim" class="form-control form-control-sm" style="width: 150px;" required>
+                    <button type="submit" class="btn btn-sm btn-outline-danger">Encerrar</button>
+                  </form>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <form th:if="${familia.ativo}" th:action="@{/familias/{uuid}/membros(uuid=${familia.uuid})}" method="post" class="row g-2 align-items-end border-top pt-3"
+              sec:authorize="hasAnyRole('ADMINISTRADOR','SECRETARIA')">
+          <div class="col-12 col-md-5">
+            <label class="form-label small fw-semibold text-muted" for="pessoaUuid">Pessoa</label>
+            <select id="pessoaUuid" name="pessoaUuid" class="form-select" required>
+              <option value="">Selecione</option>
+              <option th:each="p : ${pessoas}" th:value="${p.uuid}" th:text="${p.nome}"></option>
+            </select>
+          </div>
+          <div class="col-6 col-md-3">
+            <label class="form-label small fw-semibold text-muted" for="tipo">Tipo</label>
+            <select id="tipo" name="tipo" class="form-select" required>
+              <option th:each="t : ${tiposMembro}" th:value="${t}" th:text="${t}"></option>
+            </select>
+          </div>
+          <div class="col-6 col-md-2">
+            <label class="form-label small fw-semibold text-muted" for="dataInicio">Início</label>
+            <input id="dataInicio" type="date" name="dataInicio" class="form-control" required>
+          </div>
+          <div class="col-12 col-md-2">
+            <button type="submit" class="btn btn-eclesial w-100">
+              <i class="bi bi-plus-lg me-1"></i>Adicionar
+            </button>
+          </div>
+        </form>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+</body>
+</html>

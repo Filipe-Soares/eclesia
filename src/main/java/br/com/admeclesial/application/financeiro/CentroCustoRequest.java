@@ -1,0 +1,1 @@
+package br.com.admeclesial.application.financeiro; import jakarta.validation.constraints.*; import java.util.UUID; public record CentroCustoRequest(@NotNull UUID organizacaoEclesialUuid,@NotBlank String codigo,@NotBlank String nome,Boolean ativo){}

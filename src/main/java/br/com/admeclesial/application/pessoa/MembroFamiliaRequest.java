@@ -1,0 +1,1 @@
+package br.com.admeclesial.application.pessoa; import br.com.admeclesial.domain.pessoa.TipoMembroFamilia; import jakarta.validation.constraints.*; import java.time.LocalDate; import java.util.UUID; public record MembroFamiliaRequest(@NotNull UUID familiaUuid,@NotNull UUID pessoaUuid,@NotNull TipoMembroFamilia tipo,@NotNull LocalDate dataInicio,LocalDate dataFim){}

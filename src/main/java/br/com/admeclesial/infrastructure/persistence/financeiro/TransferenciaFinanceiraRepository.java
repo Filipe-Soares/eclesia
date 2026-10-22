@@ -1,0 +1,1 @@
+package br.com.admeclesial.infrastructure.persistence.financeiro; import br.com.admeclesial.domain.financeiro.TransferenciaFinanceira; import org.springframework.data.jpa.repository.JpaRepository; import java.util.*; public interface TransferenciaFinanceiraRepository extends JpaRepository<TransferenciaFinanceira,Long>{ Optional<TransferenciaFinanceira> findByUuid(UUID uuid); }

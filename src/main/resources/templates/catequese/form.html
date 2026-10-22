@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: assets(${edicao ? 'Editar Catequese' : 'Nova Catequese'})}">
+  <meta charset="UTF-8">
+  <title th:text="${edicao ? 'Editar catequese' : 'Nova catequese'} + ' - ADM Eclesial'"></title>
+</head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+
+<div class="app-shell">
+  <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+  
+  <main class="app-main">
+    <div class="page">
+      
+      <!-- Cabeçalho -->
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-4 pb-2 border-bottom">
+        <div>
+          <h1 class="h3 fw-bold text-dark mb-1">
+            <i class="bi bi-journal-plus text-primary me-2"></i>
+            <span th:text="${edicao ? 'Editar Catequese' : 'Nova Catequese'}">Nova Catequese</span>
+          </h1>
+          <p class="text-muted small mb-0">Informe os parâmetros do ciclo de formação catequética</p>
+        </div>
+        <div>
+          <a class="btn btn-outline-secondary d-flex align-items-center gap-1" th:href="@{/catequeses}">
+            <i class="bi bi-arrow-left"></i>
+            <span>Voltar para Lista</span>
+          </a>
+        </div>
+      </div>
+
+      <div th:replace="~{fragments/layout :: feedback}"></div>
+
+      <!-- Formulário em Card -->
+      <div class="card border-0 shadow-sm p-4 p-md-5 mb-4" style="max-width: 860px;">
+        <form th:action="${edicao ? '/catequeses/' + uuid : '/catequeses'}" th:object="${request}" method="post">
+      <div th:replace="~{fragments/layout :: formErrors}"></div>
+          
+          <div class="alert alert-danger shadow-sm border-0 mb-4" th:if="${#fields.hasGlobalErrors()}">
+            <div class="fw-bold mb-1">Erros encontrados:</div>
+            <p class="mb-0 small" th:each="error : ${#fields.globalErrors()}" th:text="${error}"></p>
+          </div>
+
+          <div class="row g-3">
+            
+            <div class="col-12 col-md-6">
+              <label class="form-label small fw-semibold text-muted" for="organizacaoEclesialUuid">Organização Eclesial <span class="text-danger">*</span></label>
+              <select id="organizacaoEclesialUuid" class="form-select" th:field="*{organizacaoEclesialUuid}" th:classappend="${#fields.hasErrors('organizacaoEclesialUuid')} ? 'is-invalid'" required autofocus>
+                <option value="">Selecione a organização</option>
+                <option th:each="org : ${organizacoes}" th:value="${org.uuid}" th:text="${org.nome + ' (' + org.tipo + ')'}"></option>
+              </select>
+              <div class="invalid-feedback" th:errors="*{organizacaoEclesialUuid}"></div>
+            </div>
+
+            <div class="col-12 col-md-6">
+              <label class="form-label small fw-semibold text-muted" for="nome">Nome do Ciclo <span class="text-danger">*</span></label>
+              <input id="nome" type="text" class="form-control" th:field="*{nome}" th:classappend="${#fields.hasErrors('nome')} ? 'is-invalid'" placeholder="Ex: Catequese 2026 - Eucaristia" required>
+              <div class="invalid-feedback" th:errors="*{nome}"></div>
+            </div>
+
+            <div class="col-12">
+              <label class="form-label small fw-semibold text-muted" for="descricao">Descrição</label>
+              <textarea id="descricao" rows="2" class="form-control" th:field="*{descricao}" placeholder="Informações gerais sobre o ciclo"></textarea>
+            </div>
+
+            <div class="col-12 col-md-4">
+              <label class="form-label small fw-semibold text-muted" for="status">Status <span class="text-danger">*</span></label>
+              <select id="status" class="form-select" th:field="*{status}">
+                <option th:each="s : ${status}" th:value="${s}" th:text="${s}"></option>
+              </select>
+            </div>
+
+            <div class="col-12 col-md-4">
+              <label class="form-label small fw-semibold text-muted" for="dataInicio">Data de Início</label>
+              <input id="dataInicio" type="date" class="form-control" th:field="*{dataInicio}">
+            </div>
+
+            <div class="col-12 col-md-4">
+              <label class="form-label small fw-semibold text-muted" for="dataFim">Data de Término</label>
+              <input id="dataFim" type="date" class="form-control" th:field="*{dataFim}">
+            </div>
+
+            <div class="col-12">
+              <label class="form-label small fw-semibold text-muted" for="observacao">Observações</label>
+              <textarea id="observacao" rows="3" class="form-control" th:field="*{observacao}" placeholder="Observações pastorais ou pedagógicas"></textarea>
+            </div>
+
+          </div>
+
+          <div class="d-flex gap-2 align-items-center mt-4 pt-3 border-top">
+            <button type="submit" class="btn btn-eclesial px-4 shadow-sm">
+              <i class="bi bi-check-lg me-1"></i> Salvar Catequese
+            </button>
+            <a class="btn btn-outline-secondary px-3" th:href="@{/catequeses}">Cancelar</a>
+          </div>
+
+        </form>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+</body>
+</html>

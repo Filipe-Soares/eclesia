@@ -1,0 +1,1 @@
+package br.com.admeclesial.domain.matrimonio; public enum StatusProcessoMatrimonial { ABERTO, EM_ANALISE, CONCLUIDO, CANCELADO }

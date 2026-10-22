@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: assets('Relatório de Pessoas - ADM Eclesial')}">
+</head>
+<body>
+    <header th:replace="~{fragments/layout :: header}"></header>
+    <div class="app-shell">
+        <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+        <main class="app-main">
+            <div class="page">
+                <div th:replace="~{fragments/layout :: feedback}"></div>
+
+                <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                    <div>
+                        <h1 class="h3 mb-1 text-gray-800">Relatório de Pessoas</h1>
+                        <p class="text-muted mb-0">Consulta analítica de fiéis, membros e colaboradores cadastrados</p>
+                    </div>
+                </div>
+
+                <!-- Formulário de Filtros -->
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-header bg-light fw-semibold">
+                        <i class="bi bi-funnel me-1"></i> Filtros de Consulta
+                    </div>
+                    <div class="card-body">
+                        <form method="get" action="/relatorios/pessoas" class="row g-3 align-items-end">
+                            <div class="col-md-5">
+                                <label class="form-label fw-semibold">Organização <span class="text-danger">*</span></label>
+                                <select name="organizacaoUuid" class="form-select" required>
+                                    <option value="">Selecione a organização</option>
+                                    <option th:each="o:${organizacoes}" th:value="${o.uuid}" th:text="${o.nome}" th:selected="${o.uuid == organizacaoUuid}"></option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">Nome</label>
+                                <input type="text" name="nome" class="form-control" th:value="${nome}" placeholder="Filtrar por nome...">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label fw-semibold">Situação</label>
+                                <select name="ativo" class="form-select">
+                                    <option value="">Todos</option>
+                                    <option value="true" th:selected="${ativo == true}">Ativos</option>
+                                    <option value="false" th:selected="${ativo == false}">Inativos</option>
+                                </select>
+                            </div>
+                            <input type="hidden" name="tamanho" value="25">
+                            <div class="col-12 d-flex justify-content-end gap-2">
+                                <button type="submit" class="btn btn-eclesial">
+                                    <i class="bi bi-search me-1"></i> Consultar
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Resultados -->
+                <div th:if="${resultado != null}">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h2 class="h5 mb-0 text-gray-800">Resultados da Consulta</h2>
+                        <span class="badge bg-light text-dark border px-3 py-2" th:text="'Total: ' + ${resultado.totalElementos} + ' registro(s)'"></span>
+                    </div>
+
+                    <div class="card shadow-sm border-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Nome</th>
+                                        <th>Nome Social</th>
+                                        <th>CPF</th>
+                                        <th>E-mail</th>
+                                        <th>Situação</th>
+                                        <th>Organização</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:if="${#lists.isEmpty(resultado.itens)}">
+                                        <td colspan="6" class="text-center text-muted py-4">Nenhum registro encontrado para os filtros selecionados.</td>
+                                    </tr>
+                                    <tr th:each="p:${resultado.itens}">
+                                        <td>
+                                            <a th:href="@{/pessoas/{uuid}(uuid=${p.uuid})}" class="fw-semibold text-decoration-none text-primary" th:text="${p.nome}"></a>
+                                        </td>
+                                        <td class="text-muted" th:text="${p.nomeSocial ?: '-'}"></td>
+                                        <td th:text="${p.cpf ?: '-'}"></td>
+                                        <td th:text="${p.email ?: '-'}"></td>
+                                        <td>
+                                            <span th:if="${p.ativo}" class="badge bg-success-subtle text-success border border-success-subtle">Ativo</span>
+                                            <span th:unless="${p.ativo}" class="badge bg-secondary-subtle text-secondary border border-secondary-subtle">Inativo</span>
+                                        </td>
+                                        <td class="text-muted" th:text="${p.organizacao}"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div th:if="${resultado.totalPaginas > 1}" class="d-flex justify-content-center mt-4">
+                        <span class="text-muted small" th:text="'Página ' + (${resultado.pagina} + 1) + ' de ' + ${resultado.totalPaginas}"></span>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

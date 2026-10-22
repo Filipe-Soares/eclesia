@@ -1,0 +1,1 @@
+package br.com.admeclesial.infrastructure.persistence.financeiro; import br.com.admeclesial.domain.financeiro.Pagamento; import org.springframework.data.jpa.repository.JpaRepository; import java.util.*; public interface PagamentoRepository extends JpaRepository<Pagamento,Long>{ Optional<Pagamento> findByUuid(UUID uuid); List<Pagamento> findAllByOrderByDataPagamentoDesc(); }

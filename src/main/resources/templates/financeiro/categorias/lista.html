@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: assets('Categorias Financeiras - ADM Eclesial')}">
+</head>
+<body>
+    <header th:replace="~{fragments/layout :: header}"></header>
+    <div class="app-shell">
+        <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+        <main class="app-main">
+            <div class="page">
+                <div th:replace="~{fragments/layout :: feedback}"></div>
+
+                <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                    <div>
+                        <h1 class="h3 mb-1 text-gray-800">Categorias Financeiras</h1>
+                        <p class="text-muted mb-0">Plano de categorias para receitas e despesas</p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <a href="/financeiro" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i> Financeiro</a>
+                        <a href="/financeiro/categorias/nova" class="btn btn-eclesial"><i class="bi bi-plus-lg me-1"></i> Nova Categoria</a>
+                    </div>
+                </div>
+
+                <th:block th:if="${#lists.isEmpty(categorias)}">
+                    <section th:replace="~{fragments/layout :: empty-state('Nenhuma categoria financeira cadastrada.', 'Cadastre categorias para classificar as movimentações.')}"></section>
+                </th:block>
+
+                <div class="card shadow-sm border-0" th:unless="${#lists.isEmpty(categorias)}">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Código</th>
+                                    <th>Nome</th>
+                                    <th>Tipo</th>
+                                    <th>Situação</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="x:${categorias}">
+                                    <td class="fw-semibold text-dark" th:text="${x.codigo}"></td>
+                                    <td th:text="${x.nome}"></td>
+                                    <td><span class="badge bg-light text-dark border" th:text="${x.tipo} ?: '—'"></span></td>
+                                    <td>
+                                        <span class="badge" th:classappend="${x.ativo} ? 'bg-success-subtle text-success border border-success-subtle' : 'bg-danger-subtle text-danger border border-danger-subtle'" th:text="${x.ativo} ? 'Ativa' : 'Inativa'"></span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: assets('Função Atribuída - ADM Eclesial')}">
+</head>
+<body>
+    <header th:replace="~{fragments/layout :: header}"></header>
+    <div class="app-shell">
+        <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+        <main class="app-main">
+            <div class="page">
+                <div th:replace="~{fragments/layout :: feedback}"></div>
+
+                <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                    <div>
+                        <h1 class="h3 mb-1 text-gray-800">Função Atribuída</h1>
+                        <p class="text-muted mb-0">Designação eclesiástica de <strong th:text="${vinculoFuncao.pessoaNome}"></strong></p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <a href="/vinculos-funcoes-eclesiais" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left me-1"></i> Voltar à Lista
+                        </a>
+                        <a href="/vinculos-funcoes-eclesiais/novo" class="btn btn-eclesial">
+                            <i class="bi bi-plus-lg me-1"></i> Atribuir Outra Função
+                        </a>
+                    </div>
+                </div>
+
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-header bg-light fw-semibold">
+                        <i class="bi bi-person-badge me-1"></i> Detalhes da Função
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <small class="text-muted d-block">Pessoa</small>
+                                <span class="fw-semibold fs-5 text-dark" th:text="${vinculoFuncao.pessoaNome}"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <small class="text-muted d-block">Organização Eclesial</small>
+                                <span class="fw-semibold fs-5 text-dark" th:text="${vinculoFuncao.organizacaoNome}"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <small class="text-muted d-block">Função</small>
+                                <span class="badge bg-primary-subtle text-primary border border-primary-subtle fs-6" th:text="${vinculoFuncao.funcaoCodigo + ' — ' + vinculoFuncao.funcaoNome}"></span>
+                            </div>
+                            <div class="col-md-3">
+                                <small class="text-muted d-block">Período</small>
+                                <span th:text="${vinculoFuncao.dataInicio}"></span> a <span th:text="${vinculoFuncao.dataFim ?: 'Atual'}"></span>
+                            </div>
+                            <div class="col-md-3">
+                                <small class="text-muted d-block">Principal</small>
+                                <span th:if="${vinculoFuncao.principal}" class="badge bg-success-subtle text-success border border-success-subtle">Sim</span>
+                                <span th:unless="${vinculoFuncao.principal}" class="badge bg-light text-secondary border">Não</span>
+                            </div>
+                            <div class="col-12" th:if="${vinculoFuncao.observacao}">
+                                <small class="text-muted d-block">Observações</small>
+                                <p class="mb-0 text-muted" th:text="${vinculoFuncao.observacao}"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

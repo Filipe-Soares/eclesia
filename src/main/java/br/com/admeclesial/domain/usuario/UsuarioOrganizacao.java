@@ -1,0 +1,4 @@
+package br.com.admeclesial.domain.usuario;
+import br.com.admeclesial.domain.organizacao.OrganizacaoEclesial; import jakarta.persistence.*;
+@Entity @Table(name="usuario_organizacao",schema="adm_eclesial",uniqueConstraints=@UniqueConstraint(name="uq_usuario_organizacao",columnNames={"usuario_id","organizacao_eclesial_id"}))
+public class UsuarioOrganizacao { @Id @GeneratedValue(strategy=GenerationType.IDENTITY) private Long id; @ManyToOne(fetch=FetchType.LAZY,optional=false) @JoinColumn(name="usuario_id") private Usuario usuario; @ManyToOne(fetch=FetchType.LAZY,optional=false) @JoinColumn(name="organizacao_eclesial_id") private OrganizacaoEclesial organizacao; public Long getId(){return id;} public Usuario getUsuario(){return usuario;} public OrganizacaoEclesial getOrganizacao(){return organizacao;} public void setUsuario(Usuario v){usuario=v;} public void setOrganizacao(OrganizacaoEclesial v){organizacao=v;} }

@@ -1,0 +1,3 @@
+package br.com.admeclesial.infrastructure.persistence.sacramento;
+import br.com.admeclesial.domain.sacramento.Sacramento; import br.com.admeclesial.domain.sacramento.StatusSacramento; import br.com.admeclesial.domain.sacramento.TipoSacramento; import org.springframework.data.jpa.repository.*; import java.time.LocalDate; import java.util.*;
+public interface SacramentoRepository extends JpaRepository<Sacramento,Long>{ Optional<Sacramento> findByUuid(UUID uuid); List<Sacramento> findAllByOrderByDataCelebracaoDesc(); List<Sacramento> findAllByOrganizacaoEclesialIdOrderByDataCelebracaoDesc(Long organizacaoId); boolean existsByOrganizacaoEclesialIdAndTipoAndDataCelebracaoAndStatus(Long organizacaoId,TipoSacramento tipo,LocalDate data,StatusSacramento status); }

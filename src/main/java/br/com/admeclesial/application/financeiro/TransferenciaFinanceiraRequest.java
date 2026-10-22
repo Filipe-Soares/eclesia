@@ -1,0 +1,1 @@
+package br.com.admeclesial.application.financeiro; import jakarta.validation.constraints.*; import java.math.BigDecimal; import java.time.LocalDate; import java.util.UUID; public record TransferenciaFinanceiraRequest(@NotNull UUID contaOrigemUuid,@NotNull UUID contaDestinoUuid,@NotNull @DecimalMin("0.01") BigDecimal valor,@NotNull LocalDate dataTransferencia,String observacao){}

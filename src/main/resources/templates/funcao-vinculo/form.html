@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: assets('Atribuir Função Eclesial')}">
+  <meta charset="UTF-8">
+  <title>Atribuir função - ADM Eclesial</title>
+</head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+
+<div class="app-shell">
+  <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+  
+  <main class="app-main">
+    <div class="page">
+      
+      <!-- Cabeçalho -->
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-4 pb-2 border-bottom">
+        <div>
+          <h1 class="h3 fw-bold text-dark mb-1">
+            <i class="bi bi-person-check text-primary me-2"></i>Atribuir Função Eclesial
+          </h1>
+          <p class="text-muted small mb-0">Associe uma função eclesial ao vínculo pessoa × organização</p>
+        </div>
+        <div>
+          <a class="btn btn-outline-secondary d-flex align-items-center gap-1" th:href="@{/funcoes-eclesiais}">
+            <i class="bi bi-arrow-left"></i>
+            <span>Voltar para Funções</span>
+          </a>
+        </div>
+      </div>
+
+      <div th:replace="~{fragments/layout :: feedback}"></div>
+
+      <!-- Formulário em Card -->
+      <div class="card border-0 shadow-sm p-4 p-md-5 mb-4" style="max-width: 860px;">
+        <form th:action="@{/vinculos-funcoes-eclesiais}" th:object="${form}" method="post">
+      <div th:replace="~{fragments/layout :: formErrors}"></div>
+          
+          <div class="row g-3">
+            
+            <div class="col-12">
+              <label class="form-label small fw-semibold text-muted" for="vinculoUuid">Vínculo Pessoa × Organização <span class="text-danger">*</span></label>
+              <select id="vinculoUuid" class="form-select" th:field="*{vinculoUuid}" required autofocus>
+                <option value="">Selecione o vínculo</option>
+                <option th:each="v : ${vinculos}" th:value="${v.uuid}" th:text="${v.pessoaNome + ' — ' + v.organizacaoNome}"></option>
+              </select>
+            </div>
+
+            <div class="col-12">
+              <label class="form-label small fw-semibold text-muted" for="funcaoUuid">Função Eclesial <span class="text-danger">*</span></label>
+              <select id="funcaoUuid" class="form-select" th:field="*{funcaoUuid}" required>
+                <option value="">Selecione a função</option>
+                <option th:each="f : ${funcoes}" th:value="${f.uuid}" th:text="${f.codigo + ' — ' + f.nome}"></option>
+              </select>
+            </div>
+
+            <div class="col-12 col-md-6">
+              <label class="form-label small fw-semibold text-muted" for="dataInicio">Data de Início <span class="text-danger">*</span></label>
+              <input id="dataInicio" type="date" class="form-control" th:field="*{dataInicio}" required>
+            </div>
+
+            <div class="col-12 col-md-6">
+              <label class="form-label small fw-semibold text-muted" for="dataFim">Data de Término</label>
+              <input id="dataFim" type="date" class="form-control" th:field="*{dataFim}">
+            </div>
+
+            <div class="col-12 mt-3">
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="principal" th:field="*{principal}">
+                <label class="form-check-label small fw-semibold text-dark" for="principal">Função Principal no Vínculo</label>
+              </div>
+            </div>
+
+            <div class="col-12">
+              <label class="form-label small fw-semibold text-muted" for="observacao">Observações</label>
+              <textarea id="observacao" rows="3" class="form-control" th:field="*{observacao}" placeholder="Observações sobre esta atribuição de função"></textarea>
+            </div>
+
+          </div>
+
+          <div class="d-flex gap-2 align-items-center mt-4 pt-3 border-top">
+            <button type="submit" class="btn btn-eclesial px-4 shadow-sm">
+              <i class="bi bi-check-lg me-1"></i> Salvar Atribuição
+            </button>
+            <a class="btn btn-outline-secondary px-3" th:href="@{/funcoes-eclesiais}">Cancelar</a>
+          </div>
+
+        </form>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+</body>
+</html>

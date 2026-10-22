@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: assets('Novo Pagamento')}">
+</head>
+<body>
+    <header th:replace="~{fragments/layout :: header}"></header>
+    <div class="app-shell">
+        <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+        <main class="app-main">
+            <div class="page">
+                <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                    <div>
+                        <h1 class="h3 mb-1 text-gray-800">Novo Pagamento</h1>
+                        <p class="text-muted mb-0">A soma das alocações deve ser igual ao valor do pagamento</p>
+                    </div>
+                    <a href="/financeiro/pagamentos" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i> Voltar</a>
+                </div>
+
+                <div th:replace="~{fragments/layout :: feedback}"></div>
+
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-4">
+                        <form method="post" action="/financeiro/pagamentos" th:object="${request}">
+                        <div th:replace="~{fragments/layout :: formErrors}"></div>
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Conta Financeira <span class="text-danger">*</span></label>
+                                    <select th:field="*{contaFinanceiraUuid}" class="form-select" required>
+                                        <option value="">Selecione</option>
+                                        <option th:each="c:${contas}" th:value="${c.uuid}" th:text="${c.nome}"></option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label fw-semibold">Valor Pago (R$) <span class="text-danger">*</span></label>
+                                    <input type="number" step="0.01" min="0.01" th:field="*{valor}" class="form-control" required>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label fw-semibold">Data <span class="text-danger">*</span></label>
+                                    <input type="date" th:field="*{dataPagamento}" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-4">
+                                    <label class="form-label fw-semibold">Meio de Pagamento <span class="text-danger">*</span></label>
+                                    <select th:field="*{meioPagamento}" class="form-select" required>
+                                        <option value="">Selecione</option>
+                                        <option th:each="x:${meios}" th:value="${x}" th:text="${x}"></option>
+                                    </select>
+                                </div>
+                                <div class="col-md-8">
+                                    <label class="form-label fw-semibold">Observação</label>
+                                    <input type="text" th:field="*{observacao}" class="form-control">
+                                </div>
+                            </div>
+
+                            <h2 class="h6 fw-bold text-secondary mt-4 mb-2">Alocações por parcela</h2>
+                            <p class="text-muted small">Informe o valor a alocar em cada parcela. Deixe em branco as que não serão pagas.</p>
+
+                            <th:block th:if="${#lists.isEmpty(request.alocacoes)}">
+                                <section th:replace="~{fragments/layout :: empty-state('Nenhuma parcela disponível para pagamento.', 'Cadastre contas a pagar para gerar parcelas.')}"></section>
+                            </th:block>
+
+                            <div class="table-responsive" th:unless="${#lists.isEmpty(request.alocacoes)}">
+                                <table class="table table-sm align-middle">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Conta a Pagar</th>
+                                            <th>Parcela</th>
+                                            <th>Vencimento</th>
+                                            <th class="text-end">Saldo</th>
+                                            <th style="width: 180px;">Valor a alocar (R$)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="linha, iStat : *{alocacoes}">
+                                            <td th:text="${linha.contaDescricao}"></td>
+                                            <td th:text="${linha.numero}"></td>
+                                            <td th:text="${linha.vencimento}"></td>
+                                            <td class="text-end" th:text="${linha.saldo}"></td>
+                                            <td>
+                                                <input type="hidden" th:field="*{alocacoes[__${iStat.index}__].parcelaAPagarUuid}">
+                                                <input type="number" step="0.01" min="0" class="form-control form-control-sm"
+                                                       th:field="*{alocacoes[__${iStat.index}__].valor}" placeholder="0.00">
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="d-flex justify-content-end gap-2 pt-3 border-top">
+                                <a href="/financeiro/pagamentos" class="btn btn-outline-secondary">Cancelar</a>
+                                <button type="submit" class="btn btn-eclesial"><i class="bi bi-check-lg me-1"></i> Salvar Pagamento</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

@@ -1,0 +1,114 @@
+
+# ==========================================
+# SISTEMA OPERACIONAL
+# ==========================================
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# ==========================================
+# IDEs
+# ==========================================
+.idea/
+*.iml
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# Eclipse / STS
+.metadata/
+.recommenders/
+.settings/
+.project
+.classpath
+.factorypath
+
+# ==========================================
+# JAVA / MAVEN / GRADLE
+# ==========================================
+target/
+build/
+.gradle/
+*.class
+*.log
+*.jar
+*.war
+*.ear
+
+# Maven Wrapper (manter versionado)
+!.mvn/wrapper/maven-wrapper.jar
+
+# ==========================================
+# OPENAI / OPENCODE
+# ==========================================
+# Configuracoes compartilhadas em .opencode/
+# devem permanecer versionadas.
+
+# Dependencias locais de plugins
+.opencode/node_modules/
+
+# Arquivos temporarios e logs
+.opencode/**/*.log
+.opencode/**/tmp/
+.opencode/**/.cache/
+
+# Configuracoes locais e segredos
+opencode.local.json
+.opencode/*.local.json
+
+# ==========================================
+# OPENSPEC
+# ==========================================
+# Manter versionados:
+# openspec/config.yaml
+# openspec/specs/
+# openspec/changes/
+# openspec/changes/archive/
+
+# Ignorar apenas temporarios
+openspec/**/*.tmp
+openspec/**/*.log
+openspec/**/.cache/
+openspec/**/tmp/
+
+# ==========================================
+# AMBIENTE / CREDENCIAIS
+# ==========================================
+.env
+.env.*
+!.env.example
+!.env.template
+
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+
+# ==========================================
+# ARQUIVOS TEMPORARIOS
+# ==========================================
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+*~
+.cache/
+tmp/
+temp/
+
+# ==========================================
+# COBERTURA / RELATORIOS
+# ==========================================
+coverage/
+htmlcov/
+*.exec
+test-results/
+
+# ==========================================
+# DOCKER / DADOS LOCAIS
+# ==========================================
+docker-data/
+postgres-data/
+redis-data/

@@ -1,0 +1,3 @@
+package br.com.admeclesial.interfaces.rest.projeto;
+import br.com.admeclesial.application.projeto.*; import br.com.admeclesial.domain.financeiro.DestinacaoContribuicao; import jakarta.validation.Valid; import org.springframework.web.bind.annotation.*; import java.util.*;
+@RestController @RequestMapping("/api/v1/destinacoes-contribuicao") public class DestinacaoContribuicaoRestController { final DestinacaoContribuicaoApplicationService s; public DestinacaoContribuicaoRestController(DestinacaoContribuicaoApplicationService s){this.s=s;} @PostMapping public DestinacaoContribuicao criar(@Valid @RequestBody DestinacaoContribuicaoRequest r){return s.criar(r);} @GetMapping public List<DestinacaoContribuicao> listar(){return s.listar();} }

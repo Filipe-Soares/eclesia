@@ -1,0 +1,5 @@
+package br.com.admeclesial.application.relatorio;
+import br.com.admeclesial.infrastructure.persistence.usuario.*; import org.springframework.security.core.context.SecurityContextHolder; import org.springframework.stereotype.Service; import org.springframework.transaction.annotation.Transactional; import java.util.*;
+@Service public class RelatorioContextoService { private final UsuarioRepository usuarios; private final UsuarioOrganizacaoRepository acessos; public RelatorioContextoService(UsuarioRepository u,UsuarioOrganizacaoRepository a){usuarios=u;acessos=a;}
+ @Transactional(readOnly=true) public List<OrganizacaoAutorizadaResponse> organizacoesAutorizadas(){var auth=SecurityContextHolder.getContext().getAuthentication(); if(auth==null||!auth.isAuthenticated())return List.of(); var u=usuarios.findByLoginIgnoreCase(auth.getName()).orElseThrow(); return acessos.findByUsuarioId(u.getId()).stream().map(x->new OrganizacaoAutorizadaResponse(x.getOrganizacao().getUuid(),x.getOrganizacao().getNome())).sorted(Comparator.comparing(OrganizacaoAutorizadaResponse::nome,String.CASE_INSENSITIVE_ORDER)).toList();}
+}

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: assets('Obrigações de Repasse - ADM Eclesial')}">
+</head>
+<body>
+    <header th:replace="~{fragments/layout :: header}"></header>
+    <div class="app-shell">
+        <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+        <main class="app-main">
+            <div class="page">
+                <div th:replace="~{fragments/layout :: feedback}"></div>
+
+                <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                    <div>
+                        <h1 class="h3 mb-1 text-gray-800">Obrigações de Repasse</h1>
+                        <p class="text-muted mb-0">Repasses gerados a partir das regras configuradas</p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <a href="/financeiro" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i> Financeiro</a>
+                        <a href="/financeiro/obrigacoes-repasse/nova" class="btn btn-eclesial"><i class="bi bi-plus-lg me-1"></i> Gerar Obrigação</a>
+                    </div>
+                </div>
+
+                <th:block th:if="${#lists.isEmpty(obrigacoes)}">
+                    <section th:replace="~{fragments/layout :: empty-state('Nenhuma obrigação de repasse gerada.', 'Gere obrigações a partir das regras de repasse cadastradas.')}"></section>
+                </th:block>
+
+                <div class="card shadow-sm border-0" th:unless="${#lists.isEmpty(obrigacoes)}">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Competência</th>
+                                    <th>Regra</th>
+                                    <th class="text-end">Base</th>
+                                    <th class="text-end">Exclusões</th>
+                                    <th class="text-end">Valor Repasse</th>
+                                    <th>Vencimento</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="x:${obrigacoes}">
+                                    <td class="fw-semibold text-dark" th:text="${x.competencia}"></td>
+                                    <td th:text="${regrasPorId.get(x.regraRepasseId)} ?: '—'"></td>
+                                    <td class="text-end" th:text="${x.valorBase}"></td>
+                                    <td class="text-end" th:text="${x.valorExclusoes}"></td>
+                                    <td class="text-end fw-bold" th:text="${x.valorRepasse}"></td>
+                                    <td th:text="${x.dataVencimento}"></td>
+                                    <td><span class="badge bg-warning-subtle text-warning border border-warning-subtle" th:text="${x.status}"></span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

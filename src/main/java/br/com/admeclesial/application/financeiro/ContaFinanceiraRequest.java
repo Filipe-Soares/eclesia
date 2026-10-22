@@ -1,0 +1,1 @@
+package br.com.admeclesial.application.financeiro; import br.com.admeclesial.domain.financeiro.TipoContaFinanceira; import jakarta.validation.constraints.*; import java.util.UUID; public record ContaFinanceiraRequest(@NotNull UUID organizacaoEclesialUuid,@NotBlank String nome,@NotNull TipoContaFinanceira tipo,String banco,String agencia,String numero,Boolean ativo){}

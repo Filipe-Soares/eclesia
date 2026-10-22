@@ -1,0 +1,54 @@
+spring:
+  application:
+    name: adm-eclesial
+
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/adm_eclesial}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:admin}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        default_schema: adm_eclesial
+        jdbc:
+          time_zone: America/Fortaleza
+
+  flyway:
+    enabled: true
+    schemas: adm_eclesial
+    default-schema: adm_eclesial
+    create-schemas: true
+
+  thymeleaf:
+    cache: false
+
+server:
+  port: ${SERVER_PORT:8080}
+  error:
+    include-message: never
+    include-binding-errors: never
+    include-stacktrace: never
+    include-exception: false
+
+springdoc:
+  api-docs:
+    path: /api/v1/openapi
+  swagger-ui:
+    path: /swagger-ui.html
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+app:
+  bootstrap:
+    admin:
+      login: ${ADM_ECLESIAL_ADMIN_LOGIN:admin}
+      password: ${ADM_ECLESIAL_ADMIN_PASSWORD:admin}

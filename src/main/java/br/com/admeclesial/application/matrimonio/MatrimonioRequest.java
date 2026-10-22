@@ -1,0 +1,1 @@
+package br.com.admeclesial.application.matrimonio; import jakarta.validation.constraints.*; import java.time.LocalDate; import java.util.UUID; public record MatrimonioRequest(@NotNull UUID processoUuid,@NotNull UUID celebracaoUuid,@NotNull LocalDate dataRegistro,String observacao){}

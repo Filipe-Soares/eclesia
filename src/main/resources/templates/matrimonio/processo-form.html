@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: assets(${processoUuid != null ? 'Editar Processo Matrimonial - ADM Eclesial' : 'Novo Processo Matrimonial - ADM Eclesial'})}">
+</head>
+<body>
+    <header th:replace="~{fragments/layout :: header}"></header>
+    <div class="app-shell">
+        <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+        <main class="app-main">
+            <div class="page">
+                <div th:replace="~{fragments/layout :: feedback}"></div>
+
+                <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                    <div>
+                        <h1 class="h3 mb-1 text-gray-800" th:text="${processoUuid != null ? 'Editar Processo Matrimonial' : 'Novo Processo Matrimonial'}">Novo Processo Matrimonial</h1>
+                        <p class="text-muted mb-0" th:text="${processoUuid != null ? 'Atualize as informações do processo matrimonial' : 'Abertura de habilitação matrimonial para noivos'}">Abertura de habilitação matrimonial para noivos</p>
+                    </div>
+                    <a href="/processos-matrimoniais" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left me-1"></i> Voltar para Processos
+                    </a>
+                </div>
+
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-4">
+                        <form method="post" th:action="${processoUuid != null ? '/processos-matrimoniais/' + processoUuid + '/editar' : '/processos-matrimoniais'}">
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Organização Eclesial <span class="text-danger">*</span></label>
+                                <select name="organizacaoEclesialUuid" class="form-select" required>
+                                    <option value="">Selecione a organização</option>
+                                    <option th:each="o : ${organizacoes}" th:value="${o.uuid}" th:text="${o.nome}" th:selected="${processo != null and processo.organizacaoUuid == o.uuid}"></option>
+                                </select>
+                            </div>
+
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Primeiro(a) Nubente <span class="text-danger">*</span></label>
+                                    <select name="nubente1Uuid" class="form-select" required>
+                                        <option value="">Selecione a pessoa</option>
+                                        <option th:each="p : ${pessoas}" th:value="${p.uuid}" th:text="${p.nome}" th:selected="${processo != null and processo.nubente1Uuid == p.uuid}"></option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Segundo(a) Nubente <span class="text-danger">*</span></label>
+                                    <select name="nubente2Uuid" class="form-select" required>
+                                        <option value="">Selecione a pessoa</option>
+                                        <option th:each="p : ${pessoas}" th:value="${p.uuid}" th:text="${p.nome}" th:selected="${processo != null and processo.nubente2Uuid == p.uuid}"></option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row g-3 mb-3">
+                                <div th:class="${processoUuid != null ? 'col-md-4' : 'col-md-6'}">
+                                    <label class="form-label fw-semibold">Data de Abertura <span class="text-danger">*</span></label>
+                                    <input type="date" name="dataAbertura" class="form-control" required th:value="${processo != null ? processo.dataAbertura : ''}">
+                                </div>
+                                <div th:class="${processoUuid != null ? 'col-md-4' : 'col-md-6'}">
+                                    <label class="form-label fw-semibold">Data de Encerramento</label>
+                                    <input type="date" name="dataEncerramento" class="form-control" th:value="${processo != null ? processo.dataEncerramento : ''}">
+                                </div>
+                                <div class="col-md-4" th:if="${processoUuid != null}">
+                                    <label class="form-label fw-semibold">Status do Processo</label>
+                                    <select name="status" class="form-select">
+                                        <option th:each="st : ${statusList}" th:value="${st}" th:text="${st}" th:selected="${processo != null and processo.status == st}"></option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label fw-semibold">Observações</label>
+                                <textarea name="observacao" class="form-control" rows="4" placeholder="Documentos apresentados, proclamações, anotações canônicas..." th:text="${processo != null ? processo.observacao : ''}"></textarea>
+                            </div>
+
+                            <div class="d-flex justify-content-end gap-2 pt-3 border-top">
+                                <a href="/processos-matrimoniais" class="btn btn-outline-secondary">
+                                    Cancelar
+                                </a>
+                                <button type="submit" class="btn btn-eclesial">
+                                    <i class="bi bi-check-lg me-1"></i> <span th:text="${processoUuid != null ? 'Atualizar Processo' : 'Salvar Processo'}">Salvar Processo</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

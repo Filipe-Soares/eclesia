@@ -1,0 +1,1 @@
+package br.com.admeclesial.domain.pessoa; public enum TipoRelacionamentoPessoa { PAI, MAE, FILHO, FILHA, CONJUGE, IRMAO, IRMA, AVO, AVA, NETO, NETA, OUTRO }

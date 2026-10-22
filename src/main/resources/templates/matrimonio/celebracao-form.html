@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: assets('Celebração Matrimonial - ADM Eclesial')}">
+</head>
+<body>
+    <header th:replace="~{fragments/layout :: header}"></header>
+    <div class="app-shell">
+        <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+        <main class="app-main">
+            <div class="page">
+                <div th:replace="~{fragments/layout :: feedback}"></div>
+
+                <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                    <div>
+                        <h1 class="h3 mb-1 text-gray-800">Celebração Matrimonial</h1>
+                        <p class="text-muted mb-0">Registro dos dados litúrgicos e celebração</p>
+                    </div>
+                    <a th:href="@{'/processos-matrimoniais/' + ${processo.uuid}}" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left me-1"></i> Voltar ao Processo
+                    </a>
+                </div>
+
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-4">
+                        <form method="post" th:action="@{'/processos-matrimoniais/' + ${processo.uuid} + '/celebracao'}">
+
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Organização Eclesial <span class="text-danger">*</span></label>
+                                    <select name="organizacaoEclesialUuid" class="form-select" required>
+                                        <option value="">Selecione a organização</option>
+                                        <option th:each="o:${organizacoes}" th:value="${o.uuid}" th:text="${o.nome}"></option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Celebrante <span class="text-danger">*</span></label>
+                                    <select name="celebranteUuid" class="form-select" required>
+                                        <option value="">Selecione o celebrante</option>
+                                        <option th:each="p:${pessoas}" th:value="${p.uuid}" th:text="${p.nome}"></option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Data da Celebração <span class="text-danger">*</span></label>
+                                    <input type="date" name="dataCelebracao" class="form-control" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Local / Igreja</label>
+                                    <input type="text" name="local" class="form-control" placeholder="Ex: Capela Nossa Senhora das Graças">
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label fw-semibold">Observações</label>
+                                <textarea name="observacao" class="form-control" rows="4" placeholder="Detalhes litúrgicos, dispensas ou anotações..."></textarea>
+                            </div>
+
+                            <div class="d-flex justify-content-end gap-2 pt-3 border-top">
+                                <a th:href="@{'/processos-matrimoniais/' + ${processo.uuid}}" class="btn btn-outline-secondary">
+                                    Cancelar
+                                </a>
+                                <button type="submit" class="btn btn-eclesial">
+                                    <i class="bi bi-check-lg me-1"></i> Salvar Celebração
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

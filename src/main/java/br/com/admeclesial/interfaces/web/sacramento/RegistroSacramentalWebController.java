@@ -1,0 +1,7 @@
+package br.com.admeclesial.interfaces.web.sacramento;
+import br.com.admeclesial.application.sacramento.*; import org.springframework.stereotype.Controller; import org.springframework.ui.Model; import org.springframework.web.bind.annotation.*; import java.util.*;
+@Controller @RequestMapping("/sacramentos/{sacramentoUuid}/registro") public class RegistroSacramentalWebController {
+ private final RegistroSacramentalApplicationService service; public RegistroSacramentalWebController(RegistroSacramentalApplicationService s){service=s;}
+ @GetMapping public String form(@PathVariable UUID sacramentoUuid,Model m){var r=service.buscarPorSacramento(sacramentoUuid);m.addAttribute("sacramentoUuid",sacramentoUuid);m.addAttribute("request",r==null?new RegistroSacramentalRequest(sacramentoUuid,null,null,null,null,null):new RegistroSacramentalRequest(sacramentoUuid,r.livro(),r.folha(),r.termo(),r.numeroRegistro(),r.observacao()));return "registro-sacramental/form";}
+ @PostMapping public String salvar(@PathVariable UUID sacramentoUuid,@ModelAttribute("request") RegistroSacramentalRequest r,Model m){try{service.salvar(new RegistroSacramentalRequest(sacramentoUuid,r.livro(),r.folha(),r.termo(),r.numeroRegistro(),r.observacao()));return "redirect:/sacramentos/"+sacramentoUuid;}catch(SacramentoBusinessException ex){m.addAttribute("businessError",ex.getMessage());m.addAttribute("sacramentoUuid",sacramentoUuid);return "registro-sacramental/form";}}
+}

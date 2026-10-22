@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: assets('Movimentações Financeiras - ADM Eclesial')}">
+</head>
+<body>
+    <header th:replace="~{fragments/layout :: header}"></header>
+    <div class="app-shell">
+        <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+        <main class="app-main">
+            <div class="page">
+                <div th:replace="~{fragments/layout :: feedback}"></div>
+
+                <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                    <div>
+                        <h1 class="h3 mb-1 text-gray-800">Movimentações Financeiras</h1>
+                        <p class="text-muted mb-0">Entradas e saídas das contas financeiras</p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <a href="/financeiro" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i> Financeiro</a>
+                        <a href="/financeiro/movimentacoes/nova" class="btn btn-eclesial"><i class="bi bi-plus-lg me-1"></i> Nova Movimentação</a>
+                    </div>
+                </div>
+
+                <th:block th:if="${#lists.isEmpty(movimentacoes)}">
+                    <section th:replace="~{fragments/layout :: empty-state('Nenhuma movimentação registrada.', 'Registre entradas e saídas das contas financeiras.')}"></section>
+                </th:block>
+
+                <div class="card shadow-sm border-0" th:unless="${#lists.isEmpty(movimentacoes)}">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Data</th>
+                                    <th>Conta</th>
+                                    <th>Tipo</th>
+                                    <th>Categoria</th>
+                                    <th class="text-end">Valor</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="x:${movimentacoes}">
+                                    <td th:text="${x.dataMovimentacao}"></td>
+                                    <td th:text="${contasPorId.get(x.contaFinanceiraId)} ?: '—'"></td>
+                                    <td><span class="badge bg-info-subtle text-info border border-info-subtle" th:text="${x.tipo}"></span></td>
+                                    <td th:text="${x.categoriaFinanceiraId != null} ? (${categoriasPorId.get(x.categoriaFinanceiraId)} ?: '—') : '—'"></td>
+                                    <td class="text-end fw-semibold" th:classappend="${x.tipo?.name() == 'ENTRADA'} ? 'text-success' : 'text-danger'" th:text="${x.valor}"></td>
+                                    <td><span class="badge bg-light text-dark border" th:text="${x.status}"></span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

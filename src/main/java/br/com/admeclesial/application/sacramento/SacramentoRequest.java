@@ -1,0 +1,2 @@
+package br.com.admeclesial.application.sacramento; import br.com.admeclesial.domain.sacramento.*; import jakarta.validation.constraints.*; import java.time.LocalDate; import java.util.UUID;
+public record SacramentoRequest(@NotNull UUID organizacaoEclesialUuid,@NotNull TipoSacramento tipo,@NotNull LocalDate dataCelebracao,@Size(max=200) String local,StatusSacramento status,@Size(max=4000) String observacao) {}

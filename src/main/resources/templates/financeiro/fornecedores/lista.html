@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: assets('Fornecedores - ADM Eclesial')}">
+</head>
+<body>
+    <header th:replace="~{fragments/layout :: header}"></header>
+    <div class="app-shell">
+        <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+        <main class="app-main">
+            <div class="page">
+                <div th:replace="~{fragments/layout :: feedback}"></div>
+
+                <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                    <div>
+                        <h1 class="h3 mb-1 text-gray-800">Fornecedores</h1>
+                        <p class="text-muted mb-0">Pessoas físicas e jurídicas para contas a pagar</p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <a href="/financeiro" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i> Financeiro</a>
+                        <a href="/financeiro/fornecedores/novo" class="btn btn-eclesial"><i class="bi bi-plus-lg me-1"></i> Novo Fornecedor</a>
+                    </div>
+                </div>
+
+                <th:block th:if="${#lists.isEmpty(fornecedores)}">
+                    <section th:replace="~{fragments/layout :: empty-state('Nenhum fornecedor cadastrado.', 'Cadastre fornecedores para lançar contas a pagar.')}"></section>
+                </th:block>
+
+                <div class="card shadow-sm border-0" th:unless="${#lists.isEmpty(fornecedores)}">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>Tipo</th>
+                                    <th>CPF/CNPJ</th>
+                                    <th>Contato</th>
+                                    <th>Situação</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="x:${fornecedores}">
+                                    <td class="fw-semibold text-dark" th:text="${x.nome}"></td>
+                                    <td><span class="badge bg-light text-dark border" th:text="${x.tipoPessoa}"></span></td>
+                                    <td th:text="${x.cpfCnpj} ?: '—'"></td>
+                                    <td th:text="${x.email} ?: (${x.telefone} ?: '—')"></td>
+                                    <td>
+                                        <span class="badge" th:classappend="${x.ativo} ? 'bg-success-subtle text-success border border-success-subtle' : 'bg-danger-subtle text-danger border border-danger-subtle'" th:text="${x.ativo} ? 'Ativo' : 'Inativo'"></span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

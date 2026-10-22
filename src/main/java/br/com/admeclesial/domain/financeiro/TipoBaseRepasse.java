@@ -1,0 +1,1 @@
+package br.com.admeclesial.domain.financeiro; public enum TipoBaseRepasse { RECEITA_BRUTA, RECEITA_LIQUIDA, CONTRIBUICOES, DIZIMO, VALOR_FIXO }

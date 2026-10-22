@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: assets('500 - Erro Interno - ADM Eclesial')}">
+</head>
+<body class="bg-light d-flex align-items-center justify-content-center min-vh-100 p-3">
+    <div class="card shadow border-0 text-center p-4 p-md-5" style="max-width: 520px; border-radius: 12px;">
+        <div class="mb-3">
+            <div class="d-inline-flex align-items-center justify-content-center bg-danger-subtle text-danger rounded-circle" style="width: 72px; height: 72px;">
+                <i class="bi bi-exclamation-octagon-fill fs-1"></i>
+            </div>
+        </div>
+        <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-2 fw-bold mb-2 align-self-center">Erro 500</span>
+        <h1 class="h3 fw-bold text-dark mb-2">Erro Interno no Servidor</h1>
+        <p class="text-muted mb-4">
+            Ocorreu uma falha inesperada durante o processamento da sua solicitação. Tente novamente em instantes. Se o problema persistir, contate o administrador técnico.
+        </p>
+        <div class="d-flex flex-column flex-sm-row justify-content-center gap-2">
+            <a th:href="@{/dashboard}" class="btn btn-eclesial">
+                <i class="bi bi-speedometer2 me-1"></i> Ir para o Painel
+            </a>
+            <a th:href="@{/}" class="btn btn-outline-secondary">
+                <i class="bi bi-house me-1"></i> Início
+            </a>
+        </div>
+    </div>
+</body>
+</html>

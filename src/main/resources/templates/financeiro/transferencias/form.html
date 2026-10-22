@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: assets('Nova Transferência Financeira')}">
+</head>
+<body>
+    <header th:replace="~{fragments/layout :: header}"></header>
+    <div class="app-shell">
+        <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+        <main class="app-main">
+            <div class="page">
+                <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                    <div>
+                        <h1 class="h3 mb-1 text-gray-800">Nova Transferência Financeira</h1>
+                        <p class="text-muted mb-0">Escolha contas distintas, ativas e da mesma organização</p>
+                    </div>
+                    <a href="/financeiro/transferencias" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i> Voltar</a>
+                </div>
+
+                <div th:replace="~{fragments/layout :: feedback}"></div>
+
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-4">
+                        <form method="post" action="/financeiro/transferencias" th:object="${request}">
+                        <div th:replace="~{fragments/layout :: formErrors}"></div>
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Conta de Origem <span class="text-danger">*</span></label>
+                                    <select th:field="*{contaOrigemUuid}" class="form-select" required>
+                                        <option value="">Selecione</option>
+                                        <option th:each="c:${contas}" th:value="${c.uuid}" th:text="${c.nome}"></option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Conta de Destino <span class="text-danger">*</span></label>
+                                    <select th:field="*{contaDestinoUuid}" class="form-select" required>
+                                        <option value="">Selecione</option>
+                                        <option th:each="c:${contas}" th:value="${c.uuid}" th:text="${c.nome}"></option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Valor (R$) <span class="text-danger">*</span></label>
+                                    <input type="number" step="0.01" min="0.01" th:field="*{valor}" class="form-control" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Data da Transferência <span class="text-danger">*</span></label>
+                                    <input type="date" th:field="*{dataTransferencia}" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label fw-semibold">Observação</label>
+                                <textarea th:field="*{observacao}" rows="3" class="form-control"></textarea>
+                            </div>
+                            <div class="d-flex justify-content-end gap-2 pt-3 border-top">
+                                <a href="/financeiro/transferencias" class="btn btn-outline-secondary">Cancelar</a>
+                                <button type="submit" class="btn btn-eclesial"><i class="bi bi-check-lg me-1"></i> Salvar Transferência</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

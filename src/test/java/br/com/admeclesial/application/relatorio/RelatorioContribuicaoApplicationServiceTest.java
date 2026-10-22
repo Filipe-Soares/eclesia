@@ -1,0 +1,6 @@
+package br.com.admeclesial.application.relatorio;
+import br.com.admeclesial.application.usuario.SegurancaOrganizacaoService; import br.com.admeclesial.infrastructure.persistence.relatorio.RelatorioContribuicaoRepository; import org.junit.jupiter.api.Test; import org.junit.jupiter.api.extension.ExtendWith; import org.mockito.*; import java.util.UUID; import static org.junit.jupiter.api.Assertions.*; import static org.mockito.Mockito.*;
+@ExtendWith(org.mockito.junit.jupiter.MockitoExtension.class) class RelatorioContribuicaoApplicationServiceTest { @Mock RelatorioContribuicaoRepository repo; @Mock SegurancaOrganizacaoService seguranca; @InjectMocks RelatorioContribuicaoApplicationService service;
+ @Test void organizacaoObrigatoria(){var f=new RelatorioContribuicaoFiltro(null,null,null,null,null,null,0,25);assertThrows(IllegalArgumentException.class,()->service.contribuicoes(f));}
+ @Test void validaAcessoAntesDaConsulta(){var id=UUID.randomUUID();doThrow(new org.springframework.security.access.AccessDeniedException("negado")).when(seguranca).validarAcesso(id);var f=new RelatorioContribuicaoFiltro(id,null,null,null,null,null,0,25);assertThrows(org.springframework.security.access.AccessDeniedException.class,()->service.contribuicoes(f));verifyNoInteractions(repo);}
+}

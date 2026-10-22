@@ -1,0 +1,296 @@
+:root {
+  --eclesial-primary: #1f3a52;
+  --eclesial-primary-dark: #152737;
+  --eclesial-accent: #c29014;
+  --eclesial-bg: #f5f7fa;
+  --eclesial-surface: #ffffff;
+  --eclesial-line: #e2e8f0;
+  --eclesial-text: #1e293b;
+  --eclesial-muted: #64748b;
+  --radius-custom: 10px;
+}
+
+body {
+  background-color: var(--eclesial-bg);
+  color: var(--eclesial-text);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  min-height: 100vh;
+}
+
+/* Navbar */
+.app-navbar {
+  background-color: var(--eclesial-primary-dark) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.fs-7 { font-size: 0.8rem; }
+.fs-8 { font-size: 0.72rem; }
+
+/* Shell Layout */
+.app-shell {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  min-height: calc(100vh - 58px);
+}
+
+.app-sidebar {
+  background: var(--eclesial-surface);
+  border-right: 1px solid var(--eclesial-line);
+  position: sticky;
+  top: 58px;
+  align-self: start;
+  height: calc(100vh - 58px);
+  overflow-y: auto;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.nav-group-section {
+  margin-top: 10px;
+}
+
+.nav-group-title {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  color: var(--eclesial-muted);
+  padding: 6px 12px;
+  border-radius: 8px;
+  user-select: none;
+}
+
+.nav-group-title:hover {
+  background-color: #f1f5f9;
+  color: var(--eclesial-primary);
+}
+
+.nav-group-title::-webkit-details-marker {
+  display: none;
+}
+
+.nav-group-title::after {
+  content: '';
+  width: 0;
+  height: 0;
+  margin-left: 8px;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 5px solid currentColor;
+  transition: transform 0.15s ease;
+  opacity: 0.7;
+  flex-shrink: 0;
+}
+
+.nav-group-section[open] > .nav-group-title::after {
+  transform: rotate(180deg);
+}
+
+.nav-link-custom {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  color: #334155;
+  text-decoration: none;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-weight: 500;
+  transition: all 0.15s ease-in-out;
+}
+
+.nav-link-custom:hover {
+  background-color: #f1f5f9;
+  color: var(--eclesial-primary);
+}
+
+.nav-link-custom i {
+  font-size: 1.05rem;
+  color: var(--eclesial-muted);
+  transition: color 0.15s ease;
+}
+
+.nav-link-custom:hover i {
+  color: var(--eclesial-primary);
+}
+
+/* App Main */
+.app-main {
+  min-width: 0;
+  padding: 24px;
+}
+
+.page {
+  max-width: 1320px;
+  margin: 0 auto;
+}
+
+/* Dashboard Cards & Metricas */
+.metric-card {
+  border: 0;
+  border-radius: var(--radius-custom);
+  background: var(--eclesial-surface);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 4px 12px rgba(0, 0, 0, 0.03);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.metric-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.06), 0 8px 18px rgba(0, 0, 0, 0.04);
+}
+
+.metric-icon-box {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+}
+
+.metric-value {
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.section-heading {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--eclesial-primary-dark);
+  margin: 24px 0 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.section-heading i {
+  color: var(--eclesial-primary);
+}
+
+/* Filtros */
+.filter-card {
+  background: var(--eclesial-surface);
+  border: 1px solid var(--eclesial-line);
+  border-radius: var(--radius-custom);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+}
+
+/* Alertas & Avisos */
+.alert-card {
+  border: 0;
+  border-radius: var(--radius-custom);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+/* Compatibilidade com formulários e tabelas existentes */
+.form-card {
+  background: var(--eclesial-surface);
+  border: 1px solid var(--eclesial-line);
+  border-radius: var(--radius-custom);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  padding: 24px;
+  max-width: 960px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-field.full {
+  grid-column: 1 / -1;
+}
+
+.form-field label {
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: #334155;
+}
+
+.required::after {
+  content: ' *';
+  color: #dc3545;
+}
+
+.field-help {
+  font-size: 0.78rem;
+  color: var(--eclesial-muted);
+}
+
+.field-error {
+  font-size: 0.8rem;
+  color: #dc3545;
+  font-weight: 600;
+}
+
+.input-error {
+  border-color: #dc3545 !important;
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.15) !important;
+}
+
+.form-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-top: 24px;
+  padding-top: 18px;
+  border-top: 1px solid var(--eclesial-line);
+}
+
+.btn-eclesial {
+  background-color: var(--eclesial-primary);
+  color: #fff;
+  border: 0;
+}
+
+.btn-eclesial:hover {
+  background-color: var(--eclesial-primary-dark);
+  color: #fff;
+}
+
+/* Responsividade */
+@media (max-width: 900px) {
+  .app-shell {
+    grid-template-columns: 1fr;
+  }
+  .app-sidebar {
+    position: static;
+    height: auto;
+    overflow: visible;
+    border-right: 0;
+    border-bottom: 1px solid var(--eclesial-line);
+  }
+  .sidebar-nav {
+    flex-direction: column;
+  }
+  .nav-group-section {
+    margin-top: 6px;
+  }
+}
+
+@media (max-width: 700px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+  .app-main {
+    padding: 14px;
+  }
+}

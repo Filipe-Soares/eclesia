@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: assets('Nova Conta a Pagar')}">
+</head>
+<body>
+    <header th:replace="~{fragments/layout :: header}"></header>
+    <div class="app-shell">
+        <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+        <main class="app-main">
+            <div class="page">
+                <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                    <div>
+                        <h1 class="h3 mb-1 text-gray-800">Nova Conta a Pagar</h1>
+                        <p class="text-muted mb-0">Informe fornecedor OU obrigação de repasse — não ambos</p>
+                    </div>
+                    <a href="/financeiro/contas-a-pagar" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i> Voltar</a>
+                </div>
+
+                <div th:replace="~{fragments/layout :: feedback}"></div>
+
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-4">
+                        <form method="post" action="/financeiro/contas-a-pagar" th:object="${request}">
+                        <div th:replace="~{fragments/layout :: formErrors}"></div>
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Organização <span class="text-danger">*</span></label>
+                                <select th:field="*{organizacaoEclesialUuid}" class="form-select" required>
+                                    <option value="">Selecione</option>
+                                    <option th:each="o:${organizacoes}" th:value="${o.uuid}" th:text="${o.nome}"></option>
+                                </select>
+                            </div>
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Fornecedor</label>
+                                    <select th:field="*{fornecedorUuid}" class="form-select">
+                                        <option value="">Nenhum</option>
+                                        <option th:each="f:${fornecedores}" th:value="${f.uuid}" th:text="${f.nome}"></option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Obrigação de Repasse</label>
+                                    <select th:field="*{obrigacaoRepasseUuid}" class="form-select">
+                                        <option value="">Nenhuma</option>
+                                        <option th:each="o:${obrigacoes}" th:value="${o.uuid}" th:text="${o.competencia} + ' - ' + ${o.valorRepasse}"></option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Descrição <span class="text-danger">*</span></label>
+                                <input type="text" th:field="*{descricao}" class="form-control" required>
+                            </div>
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-4">
+                                    <label class="form-label fw-semibold">Emissão <span class="text-danger">*</span></label>
+                                    <input type="date" th:field="*{dataEmissao}" class="form-control" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fw-semibold">Vencimento <span class="text-danger">*</span></label>
+                                    <input type="date" th:field="*{dataVencimento}" class="form-control" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fw-semibold">Valor Total (R$) <span class="text-danger">*</span></label>
+                                    <input type="number" step="0.01" min="0.01" th:field="*{valorTotal}" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-end gap-2 pt-3 border-top">
+                                <a href="/financeiro/contas-a-pagar" class="btn btn-outline-secondary">Cancelar</a>
+                                <button type="submit" class="btn btn-eclesial"><i class="bi bi-check-lg me-1"></i> Salvar Conta a Pagar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

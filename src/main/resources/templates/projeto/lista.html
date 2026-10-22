@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: assets('Projetos e Obras - ADM Eclesial')}">
+</head>
+<body>
+    <header th:replace="~{fragments/layout :: header}"></header>
+    <div class="app-shell">
+        <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+        <main class="app-main">
+            <div class="page">
+                <div th:replace="~{fragments/layout :: feedback}"></div>
+
+                <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                    <div>
+                        <h1 class="h3 mb-1 text-gray-800">Projetos e Obras</h1>
+                        <p class="text-muted mb-0">Gestão de reformas, construções e projetos paroquiais</p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <a href="/projetos/recursos" class="btn btn-outline-secondary">
+                            <i class="bi bi-wallet2 me-1"></i> Recursos Vinculados
+                        </a>
+                        <a href="/projetos/novo" class="btn btn-eclesial">
+                            <i class="bi bi-plus-lg me-1"></i> Novo Projeto
+                        </a>
+                    </div>
+                </div>
+
+                <th:block th:if="${#lists.isEmpty(projetos)}">
+                    <section th:replace="~{fragments/layout :: empty-state('Nenhum projeto ou obra cadastrado.', 'Cadastre um projeto ou obra para iniciar o acompanhamento.')}"></section>
+                </th:block>
+
+                <div class="card shadow-sm border-0" th:unless="${#lists.isEmpty(projetos)}">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Nome do Projeto</th>
+                                    <th>Tipo</th>
+                                    <th>Status</th>
+                                    <th>Valor Estimado</th>
+                                    <th class="text-end pe-3">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="x:${projetos}">
+                                    <td>
+                                        <a th:href="@{'/projetos/'+${x.uuid}}" class="fw-semibold text-decoration-none text-primary" th:text="${x.nome}"></a>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-light text-dark border" th:text="${x.tipo}"></span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle" th:text="${x.status}"></span>
+                                    </td>
+                                    <td class="fw-semibold text-dark" th:text="${x.valorEstimado}"></td>
+                                    <td class="text-end pe-3">
+                                        <div class="d-inline-flex gap-1">
+                                            <a th:href="@{'/projetos/'+${x.uuid}}" class="btn btn-sm btn-outline-secondary">
+                                                <i class="bi bi-eye me-1"></i> Detalhes
+                                            </a>
+                                            <a th:href="@{'/projetos/'+${x.uuid}+'/editar'}" class="btn btn-sm btn-outline-primary">
+                                                <i class="bi bi-pencil me-1"></i> Editar
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

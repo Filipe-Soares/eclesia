@@ -1,0 +1,1 @@
+package br.com.admeclesial.application.financeiro; import jakarta.validation.constraints.*; public record CategoriaFinanceiraRequest(@NotBlank String codigo,@NotBlank String nome,String tipo,Boolean ativo){}

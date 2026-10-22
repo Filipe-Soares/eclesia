@@ -1,0 +1,1 @@
+package br.com.admeclesial.application.organizacao; import jakarta.validation.constraints.*; public record FuncaoEclesialRequest(@NotBlank @Size(max=50) String codigo,@NotBlank @Size(max=150) String nome,String descricao,boolean exclusivoNaOrganizacao){}

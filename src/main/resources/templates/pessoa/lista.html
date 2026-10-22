@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: assets('Pessoas')}">
+  <meta charset="UTF-8">
+  <title>Pessoas - ADM Eclesial</title>
+</head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+
+<div class="app-shell">
+  <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+  
+  <main class="app-main">
+    <div class="page">
+      
+      <!-- Cabeçalho -->
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-4 pb-2 border-bottom">
+        <div>
+          <h1 class="h3 fw-bold text-dark mb-1">
+            <i class="bi bi-people text-primary me-2"></i>Pessoas
+          </h1>
+          <p class="text-muted small mb-0">Cadastro geral de fiéis, membros e paroquianos</p>
+        </div>
+        <div>
+          <a class="btn btn-eclesial d-flex align-items-center gap-2 shadow-sm" th:href="@{/pessoas/nova}">
+            <i class="bi bi-plus-lg"></i>
+            <span>Nova Pessoa</span>
+          </a>
+        </div>
+      </div>
+
+      <div th:replace="~{fragments/layout :: feedback}"></div>
+
+      <!-- Empty State -->
+      <th:block th:if="${#lists.isEmpty(pessoas)}">
+        <section th:replace="~{fragments/layout :: empty-state('Nenhuma pessoa cadastrada.', 'Cadastre a primeira pessoa para começar a utilizar este módulo.')}">
+        </section>
+      </th:block>
+
+      <!-- Tabela de Listagem -->
+      <div class="card border-0 shadow-sm" th:unless="${#lists.isEmpty(pessoas)}">
+        <div class="table-responsive">
+          <table class="table table-hover table-striped align-middle mb-0">
+            <thead class="table-light">
+              <tr>
+                <th class="ps-3">Nome</th>
+                <th>CPF</th>
+                <th class="text-end pe-3">Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="p : ${pessoas}">
+                <td class="ps-3 fw-medium text-dark" th:text="${p.nome}"></td>
+                <td class="text-muted" th:text="${p.cpf != null and !p.cpf.isBlank() ? p.cpf : '—'}"></td>
+                <td class="text-end pe-3">
+                  <div class="d-inline-flex gap-1">
+                    <a class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1" th:href="@{/pessoas/{uuid}(uuid=${p.uuid})}">
+                      <i class="bi bi-eye"></i>
+                      <span>Detalhes</span>
+                    </a>
+                    <a class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1" th:href="@{/pessoas/{uuid}/editar(uuid=${p.uuid})}">
+                      <i class="bi bi-pencil"></i>
+                      <span>Editar</span>
+                    </a>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+</body>
+</html>

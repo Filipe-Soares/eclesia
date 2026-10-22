@@ -1,0 +1,1 @@
+package br.com.admeclesial.domain.financeiro; public enum StatusObrigacaoRepasse { ABERTA, PAGA, CANCELADA, VENCIDA }

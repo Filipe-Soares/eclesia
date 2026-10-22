@@ -1,0 +1,1 @@
+package br.com.admeclesial.application.financeiro; import br.com.admeclesial.domain.financeiro.TipoPessoaFornecedor; import jakarta.validation.constraints.*; public record FornecedorRequest(@NotNull TipoPessoaFornecedor tipoPessoa,@NotBlank String nome,String cpfCnpj,String email,String telefone,Boolean ativo){}

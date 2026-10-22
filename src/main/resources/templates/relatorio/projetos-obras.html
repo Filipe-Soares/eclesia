@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: assets('Relatório de Projetos e Obras - ADM Eclesial')}">
+</head>
+<body>
+    <header th:replace="~{fragments/layout :: header}"></header>
+    <div class="app-shell">
+        <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+        <main class="app-main">
+            <div class="page">
+                <div th:replace="~{fragments/layout :: feedback}"></div>
+
+                <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                    <div>
+                        <h1 class="h3 mb-1 text-gray-800">Relatório de Projetos e Obras</h1>
+                        <p class="text-muted mb-0">Controle físico-financeiro de reformas, edificações e investimentos</p>
+                    </div>
+                </div>
+
+                <!-- Filtros -->
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-header bg-light fw-semibold">
+                        <i class="bi bi-funnel me-1"></i> Filtros de Consulta
+                    </div>
+                    <div class="card-body">
+                        <form method="get" action="/relatorios/projetos-obras" class="row g-3 align-items-end">
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">Organização <span class="text-danger">*</span></label>
+                                <select name="organizacaoUuid" class="form-select" required>
+                                    <option value="">Selecione</option>
+                                    <option th:each="o:${organizacoes}" th:value="${o.uuid}" th:text="${o.nome}" th:selected="${o.uuid == organizacaoUuid}"></option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">Tipo de Projeto</label>
+                                <select name="tipo" class="form-select">
+                                    <option value="">Todos</option>
+                                    <option th:each="x:${tipos}" th:value="${x}" th:text="${x}" th:selected="${x == tipo}"></option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">Situação</label>
+                                <select name="status" class="form-select">
+                                    <option value="">Todas</option>
+                                    <option th:each="x:${statusOpcoes}" th:value="${x}" th:text="${x}" th:selected="${x == status}"></option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label fw-semibold">Início De</label>
+                                <input type="date" name="inicio" class="form-control" th:value="${inicio}">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label fw-semibold">Fim Até</label>
+                                <input type="date" name="fim" class="form-control" th:value="${fim}">
+                            </div>
+                            <div class="col-md-6 d-flex align-items-center mb-2">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="somenteRecursoSemUtilizacao" name="somenteRecursoSemUtilizacao" value="true" th:checked="${somenteRecursoSemUtilizacao}">
+                                    <label class="form-check-label fw-semibold" for="somenteRecursoSemUtilizacao">
+                                        Somente com recurso disponível sem utilização
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-12 d-flex justify-content-end gap-2">
+                                <button type="submit" class="btn btn-eclesial">
+                                    <i class="bi bi-search me-1"></i> Consultar
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Resumo -->
+                <div th:if="${resumo != null}">
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-3">
+                            <div class="card shadow-sm border-0 border-start border-primary border-4">
+                                <div class="card-body">
+                                    <span class="text-muted small d-block">Total de Projetos</span>
+                                    <span class="fs-4 fw-bold text-dark" th:text="${resumo.totalProjetos}">0</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3" th:if="${resumo.exibirFinanceiro}">
+                            <div class="card shadow-sm border-0 border-start border-info border-4">
+                                <div class="card-body">
+                                    <span class="text-muted small d-block">Recursos Vinculados</span>
+                                    <span class="fs-4 fw-bold text-info" th:text="'R$ ' + ${#numbers.formatDecimal(resumo.recursosVinculados,1,2)}">R$ 0,00</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3" th:if="${resumo.exibirFinanceiro}">
+                            <div class="card shadow-sm border-0 border-start border-warning border-4">
+                                <div class="card-body">
+                                    <span class="text-muted small d-block">Recursos Utilizados</span>
+                                    <span class="fs-4 fw-bold text-warning" th:text="'R$ ' + ${#numbers.formatDecimal(resumo.recursosUtilizados,1,2)}">R$ 0,00</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3" th:if="${resumo.exibirFinanceiro}">
+                            <div class="card shadow-sm border-0 border-start border-success border-4">
+                                <div class="card-body">
+                                    <span class="text-muted small d-block">Saldo Disponível</span>
+                                    <span class="fs-4 fw-bold text-success" th:text="'R$ ' + ${#numbers.formatDecimal(resumo.saldoDisponivel,1,2)}">R$ 0,00</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tabela -->
+                    <div class="card shadow-sm border-0 mb-3" th:if="${resultado != null}">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Projeto / Obra</th>
+                                        <th>Tipo</th>
+                                        <th>Situação</th>
+                                        <th>Período</th>
+                                        <th>Indicador</th>
+                                        <th th:if="${resumo.exibirFinanceiro}" class="text-end">Estimado</th>
+                                        <th th:if="${resumo.exibirFinanceiro}" class="text-end">Vinculado</th>
+                                        <th th:if="${resumo.exibirFinanceiro}" class="text-end">Utilizado</th>
+                                        <th th:if="${resumo.exibirFinanceiro}" class="text-end pe-3">Saldo</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:if="${#lists.isEmpty(resultado.itens)}">
+                                        <td colspan="9" class="text-center text-muted py-4">Nenhum projeto encontrado.</td>
+                                    </tr>
+                                    <tr th:each="p:${resultado.itens}">
+                                        <td>
+                                            <a th:href="@{/projetos/{uuid}(uuid=${p.uuid})}" class="fw-semibold text-decoration-none text-primary" th:text="${p.nome}"></a>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-light text-dark border" th:text="${p.tipo}"></span>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-primary-subtle text-primary border border-primary-subtle" th:text="${p.status}"></span>
+                                        </td>
+                                        <td class="text-muted small">
+                                            <span th:text="${p.dataInicio ?: '-'}"></span> — <span th:text="${p.dataFim ?: '-'}"></span>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-warning-subtle text-warning border border-warning-subtle" th:if="${p.recursoSemUtilizacao}">
+                                                <i class="bi bi-exclamation-circle me-1"></i> Recurso sem uso
+                                            </span>
+                                            <span class="text-muted" th:unless="${p.recursoSemUtilizacao}">—</span>
+                                        </td>
+                                        <td th:if="${resumo.exibirFinanceiro}" class="text-end" th:text="${p.valorEstimado != null ? 'R$ ' + #numbers.formatDecimal(p.valorEstimado,1,2) : '-'}"></td>
+                                        <td th:if="${resumo.exibirFinanceiro}" class="text-end" th:text="'R$ ' + ${#numbers.formatDecimal(p.recursosVinculados,1,2)}"></td>
+                                        <td th:if="${resumo.exibirFinanceiro}" class="text-end text-warning fw-semibold" th:text="'R$ ' + ${#numbers.formatDecimal(p.recursosUtilizados,1,2)}"></td>
+                                        <td th:if="${resumo.exibirFinanceiro}" class="text-end pe-3 text-success fw-bold" th:text="'R$ ' + ${#numbers.formatDecimal(p.saldoDisponivel,1,2)}"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mt-3" th:if="${resultado != null}">
+                        <span class="text-muted small" th:text="'Total: ' + ${resultado.totalElementos}"></span>
+                        <span class="text-muted small" th:if="${resultado.totalPaginas > 1}" th:text="'Página ' + (${resultado.pagina} + 1) + ' de ' + ${resultado.totalPaginas}"></span>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

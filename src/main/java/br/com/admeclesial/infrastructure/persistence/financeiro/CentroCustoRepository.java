@@ -1,0 +1,1 @@
+package br.com.admeclesial.infrastructure.persistence.financeiro; import br.com.admeclesial.domain.financeiro.CentroCusto; import org.springframework.data.jpa.repository.JpaRepository; import java.util.*; public interface CentroCustoRepository extends JpaRepository<CentroCusto,Long>{ Optional<CentroCusto> findByUuid(UUID uuid); List<CentroCusto> findAllByOrderByNomeAsc(); }

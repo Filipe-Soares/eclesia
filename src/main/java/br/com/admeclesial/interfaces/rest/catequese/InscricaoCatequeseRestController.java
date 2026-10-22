@@ -1,0 +1,4 @@
+package br.com.admeclesial.interfaces.rest.catequese;
+import br.com.admeclesial.application.catequese.*; import jakarta.validation.Valid; import org.springframework.http.HttpStatus; import org.springframework.web.bind.annotation.*; import java.util.*;
+@RestController @RequestMapping("/api/v1/inscricoes-catequese")
+public class InscricaoCatequeseRestController { private final InscricaoCatequeseApplicationService service; public InscricaoCatequeseRestController(InscricaoCatequeseApplicationService s){service=s;} @PostMapping @ResponseStatus(HttpStatus.CREATED) public InscricaoCatequeseResponse criar(@Valid @RequestBody InscricaoCatequeseRequest r){return service.criar(r);} @GetMapping("/{uuid}") public InscricaoCatequeseResponse buscar(@PathVariable UUID uuid){return service.buscar(uuid);} @GetMapping("/por-turma") public List<InscricaoCatequeseResponse> porTurma(@RequestParam UUID turmaUuid){return service.listarPorTurma(turmaUuid);} }

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: assets('Relatório de Contas a Pagar - ADM Eclesial')}">
+</head>
+<body>
+    <header th:replace="~{fragments/layout :: header}"></header>
+    <div class="app-shell">
+        <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+        <main class="app-main">
+            <div class="page">
+                <div th:replace="~{fragments/layout :: feedback}"></div>
+
+                <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                    <div>
+                        <h1 class="h3 mb-1 text-gray-800">Relatório de Contas a Pagar</h1>
+                        <p class="text-muted mb-0">Gestão e liquidação de despesas paroquiais e fornecedores</p>
+                    </div>
+                </div>
+
+                <!-- Filtros -->
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-header bg-light fw-semibold">
+                        <i class="bi bi-funnel me-1"></i> Filtros de Consulta
+                    </div>
+                    <div class="card-body">
+                        <form method="get" th:action="@{/relatorios/contas-a-pagar}" class="row g-3 align-items-end">
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">Organização <span class="text-danger">*</span></label>
+                                <select name="organizacaoUuid" class="form-select" required>
+                                    <option value="">Selecione</option>
+                                    <option th:each="o:${organizacoes}" th:value="${o.uuid}" th:text="${o.nome}" th:selected="${o.uuid == organizacaoUuid}"></option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label fw-semibold">Vencimento De</label>
+                                <input type="date" name="vencimentoInicio" class="form-control" th:value="${vencimentoInicio}">
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label fw-semibold">Vencimento Até</label>
+                                <input type="date" name="vencimentoFim" class="form-control" th:value="${vencimentoFim}">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">Fornecedor</label>
+                                <select name="fornecedorUuid" class="form-select">
+                                    <option value="">Todos</option>
+                                    <option th:each="f:${fornecedores}" th:value="${f.uuid}" th:text="${f.nome}" th:selected="${f.uuid == fornecedorUuid}"></option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">Situação</label>
+                                <select name="status" class="form-select">
+                                    <option value="">Todas</option>
+                                    <option th:each="s:${statusOpcoes}" th:value="${s}" th:text="${s}" th:selected="${s == status}"></option>
+                                </select>
+                            </div>
+                            <div class="col-md-4 d-flex align-items-center mb-2">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="somenteVencidas" name="somenteVencidas" value="true" th:checked="${somenteVencidas}">
+                                    <label class="form-check-label fw-semibold text-danger" for="somenteVencidas">
+                                        <i class="bi bi-exclamation-octagon me-1"></i> Somente vencidas
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-4 d-flex justify-content-end gap-2">
+                                <button type="submit" class="btn btn-eclesial w-100">
+                                    <i class="bi bi-search me-1"></i> Consultar
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Resumo -->
+                <div th:if="${resumo != null}">
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-4">
+                            <div class="card shadow-sm border-0 border-start border-primary border-4">
+                                <div class="card-body">
+                                    <span class="text-muted small d-block">Valor Total</span>
+                                    <span class="fs-4 fw-bold text-dark" th:text="'R$ ' + ${#numbers.formatDecimal(resumo.valorTotal,1,2)}">R$ 0,00</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card shadow-sm border-0 border-start border-success border-4">
+                                <div class="card-body">
+                                    <span class="text-muted small d-block">Valor Pago</span>
+                                    <span class="fs-4 fw-bold text-success" th:text="'R$ ' + ${#numbers.formatDecimal(resumo.valorPago,1,2)}">R$ 0,00</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card shadow-sm border-0 border-start border-danger border-4">
+                                <div class="card-body">
+                                    <span class="text-muted small d-block">Saldo a Pagar</span>
+                                    <span class="fs-4 fw-bold text-danger" th:text="'R$ ' + ${#numbers.formatDecimal(resumo.saldoAPagar,1,2)}">R$ 0,00</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tabela -->
+                    <div class="card shadow-sm border-0 mb-3" th:if="${resultado != null}">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Vencimento</th>
+                                        <th>Fornecedor / Origem</th>
+                                        <th>Descrição</th>
+                                        <th>Situação</th>
+                                        <th class="text-end">Valor</th>
+                                        <th class="text-end">Pago</th>
+                                        <th class="text-end pe-3">Saldo</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:if="${#lists.isEmpty(resultado.itens)}">
+                                        <td colspan="7" class="text-center text-muted py-4">Nenhuma conta encontrada para os filtros selecionados.</td>
+                                    </tr>
+                                    <tr th:each="i:${resultado.itens}" th:classappend="${i.vencida} ? 'table-danger' : ''">
+                                        <td>
+                                            <i class="bi bi-calendar-event me-1 text-muted"></i>
+                                            <span th:text="${#temporals.format(i.vencimento,'dd/MM/yyyy')}"></span>
+                                        </td>
+                                        <td>
+                                            <span class="fw-semibold text-dark" th:text="${i.fornecedorOrigem}"></span>
+                                            <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle ms-1" th:if="${i.repasse}">Repasse</span>
+                                        </td>
+                                        <td th:text="${i.descricao}"></td>
+                                        <td>
+                                            <span class="badge bg-light text-dark border" th:text="${i.status}"></span>
+                                            <span class="badge bg-danger ms-1" th:if="${i.vencida}">VENCIDA</span>
+                                        </td>
+                                        <td class="text-end fw-bold" th:text="'R$ ' + ${#numbers.formatDecimal(i.valorTotal,1,2)}"></td>
+                                        <td class="text-end text-success fw-semibold" th:text="'R$ ' + ${#numbers.formatDecimal(i.valorPago,1,2)}"></td>
+                                        <td class="text-end pe-3 fw-bold text-danger" th:text="'R$ ' + ${#numbers.formatDecimal(i.saldo,1,2)}"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mt-3" th:if="${resultado != null}">
+                        <span class="text-muted small" th:text="|Total de contas: ${resultado.totalElementos}|"></span>
+                        <span class="text-muted small" th:if="${resultado.totalPaginas > 1}" th:text="|Página ${resultado.pagina + 1} de ${resultado.totalPaginas}|"></span>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

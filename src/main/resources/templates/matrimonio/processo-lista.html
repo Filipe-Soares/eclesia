@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: assets('Processos Matrimoniais - ADM Eclesial')}">
+</head>
+<body>
+    <header th:replace="~{fragments/layout :: header}"></header>
+    <div class="app-shell">
+        <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+        <main class="app-main">
+            <div class="page">
+                <div th:replace="~{fragments/layout :: feedback}"></div>
+
+                <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                    <div>
+                        <h1 class="h3 mb-1 text-gray-800">Processos Matrimoniais</h1>
+                        <p class="text-muted mb-0">Acompanhamento e habilitação para o sacramento do matrimônio</p>
+                    </div>
+                    <a href="/processos-matrimoniais/novo" class="btn btn-eclesial">
+                        <i class="bi bi-plus-lg me-1"></i> Novo Processo
+                    </a>
+                </div>
+
+                <th:block th:if="${#lists.isEmpty(processos)}">
+                    <section th:replace="~{fragments/layout :: empty-state('Nenhum processo matrimonial cadastrado.', 'Cadastre um processo matrimonial para iniciar o acompanhamento.')}"></section>
+                </th:block>
+
+                <div class="card shadow-sm border-0" th:unless="${#lists.isEmpty(processos)}">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Nubentes</th>
+                                    <th>Organização</th>
+                                    <th>Status</th>
+                                    <th class="text-end pe-3">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="p : ${processos}">
+                                    <td>
+                                        <div class="fw-semibold text-dark">
+                                            <i class="bi bi-heart-fill text-danger me-2"></i>
+                                            <span th:text="${p.nubente1 + ' e ' + p.nubente2}"></span>
+                                        </div>
+                                    </td>
+                                    <td class="text-muted" th:text="${p.organizacao}"></td>
+                                    <td>
+                                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle" th:text="${p.status}"></span>
+                                    </td>
+                                    <td class="text-end pe-3">
+                                        <div class="d-inline-flex gap-1">
+                                            <a th:href="@{'/processos-matrimoniais/' + ${p.uuid}}" class="btn btn-sm btn-outline-secondary">
+                                                <i class="bi bi-eye me-1"></i> Detalhes
+                                            </a>
+                                            <a th:href="@{'/processos-matrimoniais/' + ${p.uuid} + '/editar'}" class="btn btn-sm btn-outline-primary">
+                                                <i class="bi bi-pencil me-1"></i> Editar
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
